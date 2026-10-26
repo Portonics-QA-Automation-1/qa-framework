@@ -15,7 +15,11 @@ to it (e.g. a job id, a screenshot path).
 2. Present its classification and reasoning as-is.
 3. If classified as a Real bug, present the drafted defect report and ask whether to file it
    (in whatever tracker this project uses) or revise it first — never file it automatically.
-4. **Filing in the defect tracker (only after an explicit yes for this specific draft):**
+4. **Filing in Karmo:** when the project files bugs in Karmo and the QA member wants this one
+   filed, hand over to `/qa-framework:qa-file-bug` with the draft. It follows the project's
+   "Karmo bug filing" rules, asks the Assignee/Sprint (and Components) pick-list and files only
+   after a yes.
+   **Filing in another tracker (only after an explicit yes for this specific draft):**
    using the claude.ai connector for the tracker the project conventions name (e.g. Jira)
    and the project key from the conventions (`get_qa_guidelines` → `project_conventions`, or
    `conventions/environments.md`):
