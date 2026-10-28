@@ -40,20 +40,44 @@ stable for unaffected cases, update changed rows, append new ids for new coverag
 
 ## Generation workflow
 
-1. Build the traceability inventory: every user story, acceptance scenario, functional
-   requirement, non-functional requirement, and documented edge case.
-2. One end-to-end positive case per acceptance scenario minimum, written as one row per
+1. **Read the story before designing anything.** For every user story row, read its
+   Expectation, its Conditions of Satisfaction (CoS) and its Acceptance Criteria (AC), in
+   that order. Use the story's own CoS/AC ids; if it has none, use the `USn-CSm` / `USn-ACm`
+   ids from the requirement analysis (numbered in story order). For each CoS bullet, note the
+   AC that gives its expected result. A CoS with no AC, or an AC that gives no observable
+   result, is a Specification gap — don't guess the result.
+2. Build the traceability inventory: every user story, CoS, acceptance criterion/scenario,
+   functional requirement, non-functional requirement, and documented edge case.
+3. **Order the suite by the story** (see "Story order" below): story row by row, CoS bullet by
+   CoS bullet inside each row. Technique and coverage area never decide the order.
+4. One end-to-end positive case per acceptance scenario minimum, written as one row per
    applicable `Section` and per applicable `User / Account Type` (see Hard rules). Split
    further only when different states, rules, or expected results must be verified
    independently.
-3. Add risk-based negative, boundary, state-transition, integration, UI, and non-functional
+5. Add risk-based negative, boundary, state-transition, integration, UI, and non-functional
    cases — grounded only in what the spec states. Apply equivalence partitioning,
    boundary-value analysis, decision tables for rule combinations, state-transition testing,
-   role/permission matrices, and pairwise coverage where a large matrix justifies it.
-4. Walk every standard coverage category (see below). For each: produce traceable cases, or
+   role/permission matrices, and pairwise coverage where a large matrix justifies it. Place
+   each one under the CoS it tests, never in a separate technique or area group.
+6. Walk every standard coverage category (see below). For each: produce traceable cases, or
    mark it `N/A` with a concise, honest reason — never pad with token cases.
-5. Complete the Requirements traceability table (every requirement id → its TC IDs, or the
+7. Complete the Requirements traceability table (every requirement id → its TC IDs, or the
    gap that blocks it), the coverage summary, and the Specification gaps section.
+
+## Story order
+
+QA members review and execute the suite against the story, so the suite reads like the story:
+
+- Story rows in the order the story lists them; inside each row, CoS bullets in the order the
+  row lists them. Cases that cover no CoS (FRs, NFRs, edge cases and regression checks with no
+  CoS of their own) come after the last story row, in spec order.
+- Under each CoS: the happy-path case(s) first, then that CoS's negative, boundary and edge
+  cases.
+- The Android and iOS rows of the same check sit next to each other (Android first), as do
+  the rows of the same check for each account type.
+- Every case is linked to the AC that gives its expected result.
+- TC IDs follow this order in a new suite. When regenerating, existing IDs stay stable (see
+  above), so place rows by story order even if their IDs are no longer sequential.
 
 ## Required coverage review categories
 
@@ -114,6 +138,28 @@ of scope (named unaffected journeys, adjacent features).
 
 ## Required format
 
+Group the test cases under one heading per story row, then one heading per CoS, in story
+order. Each CoS heading quotes the bullet and names its linked AC, followed by that CoS's
+table:
+
+```markdown
+## US1 — <story row title>
+
+### US1-CS1 — "<CoS bullet, quoted exactly>" (AC: US1-AC1, US1-AC2)
+
+| TC ID | Section | ... |
+
+### US1-CS2 — "<CoS bullet, quoted exactly>" (AC: none)
+
+No cases — Specification gap RA-4
+```
+
+A CoS with nothing testable keeps its heading, with the line `No cases — Specification gap
+RA-n` (the gap id from the requirement analysis or this file's Specification gaps) instead of
+a table. Cases with no CoS go under a final `## Not tied to a CoS` heading.
+
+Every table uses the same 12 columns:
+
 | TC ID | Section | User / Account Type | Test Description | Test Type | Scenario | Priority | Preconditions | Test Data | Test Steps | Expected Result | Platform / Brand |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 
@@ -134,9 +180,15 @@ path), P2 (important alternate/negative), P3 (lower-risk/polish) — set from ri
 business impact, not just inherited from the story's own priority.
 
 End with a **Requirements traceability** table (`Requirement ID | Requirement | TC IDs`, one
-row per user story, acceptance scenario, FR, NFR and edge case — TC IDs or the blocking gap),
-a coverage summary table (`Covered`/`Partial`/`N/A` per category, with TC ids or a reason),
-and a **Specification gaps** section (`None` only after genuine review).
+row per user story, CoS, acceptance criterion/scenario, FR, NFR and edge case — TC IDs or the
+blocking gap), in story order (story row, then its CoS and AC in story order, then FRs, NFRs
+and edge cases); a coverage summary table (`Covered`/`Partial`/`N/A` per category, with TC
+ids or a reason); and a **Specification gaps** section (`None` only after genuine review).
+
+**Workbook export** (when the project's convention calls for one): the first sheet is
+`Story map` with the columns `Row | CoS id | CoS text | Linked AC | TC IDs | Gap` — one row per
+CoS in story order, `Gap` holding the RA id for a CoS with no cases. The import sheet keeps
+exactly the 12 columns above, rows in the same story order; never add a CoS or AC column to it.
 
 ## Output
 
@@ -152,6 +204,9 @@ Confirm: every requirement in the spec has a Requirements traceability row with 
 Specification gap; every TC ID is unique; every row has exactly one allowed `Section` and one
 allowed `User / Account Type`, with separate Android and iOS rows for app checks; in every
 row `Test Steps`, `Test Data` and `Expected Result` have the same numbered lines and
-`Preconditions` holds no test data; the coverage summary has no blank cells; you changed no
-file outside the QA output path(s). Reply with: total case count, coverage summary verdict,
+`Preconditions` holds no test data; the cases follow story order (rows, then CoS bullets,
+happy path first under each CoS, Android/iOS twins together) with a heading for every CoS,
+including `No cases — Specification gap RA-n` ones; the traceability table (and the workbook's
+`Story map` sheet, if exported) is in the same order; the coverage summary has no blank
+cells; you changed no file outside the QA output path(s). Reply with: total case count, coverage summary verdict,
 the gaps list, and the file path(s).

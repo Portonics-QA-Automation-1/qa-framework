@@ -54,6 +54,11 @@ resolves as `Resolved`, and append new ids for new findings. Never renumber.
 - Every user story has a priority and an independent test / demoable slice.
 - Every acceptance scenario, functional requirement, non-functional requirement, and edge
   case has a stable id. List every one that lacks one.
+- Every Condition of Satisfaction (CoS) and Acceptance Criterion (AC) has an id. If the story
+  gives none, assign `USn-CSm` and `USn-ACm` in story order (story row n, m-th bullet in that
+  row), list them in section 3, record one Minor `Missing ID` finding for them, and use
+  them in every reference. Note
+  which AC gives each CoS its expected result; a CoS with no AC is a gap.
 - Acceptance scenarios state one observable outcome (Given/When/Then or equivalent).
 - Non-functional requirements are measurable (a number, a device, a standard) — "fast",
   "secure", "user-friendly" without a criterion is a gap.
@@ -140,6 +145,9 @@ and explicit out-of-scope — each with a spec reference.
 
 | Req ID | Summary (plain English) | Testability | Finding(s) |
 |---|---|---|---|
+
+Rows in story order: each story row, then its CoS (with the linked AC id in the summary) and
+its AC, then FRs, NFRs and edge cases.
 
 ## 4. Findings (Specification gaps)
 

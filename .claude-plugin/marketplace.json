@@ -7,7 +7,7 @@
       "name": "qa-framework",
       "source": "./plugins/qa-framework",
       "description": "15 QA agents and 15 skills: requirement analysis, test plan, readiness, test design, Execute.io sync, manual execution, triage, Karmo bug filing, Maestro automation, regression, retest, sign-off and post-release.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "category": "testing"
     }
   ]

@@ -26,6 +26,18 @@ Argument: `$ARGUMENTS` — the feature name/slug, or a pasted requirement.
      combined values; one row per type);
    - `Test Steps`, `Test Data` and `Expected Result` have the same numbered lines (1..N,
      matching numbers), and `Preconditions` holds no test data.
+   Check the order against the story itself (open it; don't trust the file's headings):
+   - cases follow the story row by row and, inside each row, the CoS bullets in the story's
+     order — not grouped by technique or coverage area;
+   - every CoS has a heading that quotes the bullet and names its linked AC, and a CoS with
+     nothing testable says `No cases — Specification gap RA-n` under its heading;
+   - under each CoS the happy path comes first, then its negative/boundary/edge cases, and
+     Android/iOS twins sit next to each other;
+   - each case's expected result comes from the AC its CoS heading names;
+   - the traceability table is in the same story order, and a workbook export (if any) opens
+     with a `Story map` sheet (`Row | CoS id | CoS text | Linked AC | TC IDs | Gap`) while its
+     import sheet keeps only the 12 columns.
+   If the order is wrong, send it back to the designer to reorder before reporting.
    Also verify: every requirement id is in the Requirements traceability table with TC IDs
    or in Specification gaps; every TC ID is unique; the coverage summary has no blank
    cells; no file outside the test-case output changed.
