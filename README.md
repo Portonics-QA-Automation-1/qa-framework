@@ -40,8 +40,8 @@ You need Claude Code. Inside a Claude Code session, add the marketplace, then in
 - **Local folder** (for example, a shared drive or a copied folder):
   `/plugin marketplace add /path/to/qa-framework`
 - **GitHub** (the team's copy, private; ask the QA manager for read access first):
-  `/plugin marketplace add https://github.com/AkramOffice/qa-framework.git`
-  (or `AkramOffice/qa-framework`). Claude Code clones it with your own GitHub login, so run
+  `/plugin marketplace add https://github.com/Portonics-QA-Automation-1/qa-framework.git`
+  (or `Portonics-QA-Automation-1/qa-framework`). Claude Code clones it with your own GitHub login, so run
   `gh auth login` or set up Git credentials for github.com first.
 
 Then run `/reload-plugins`, or restart Claude Code. `/plugin` → **Installed** shows the plugin.
@@ -49,7 +49,7 @@ Then run `/reload-plugins`, or restart Claude Code. `/plugin` → **Installed** 
 You can do the same from a terminal:
 
 ```bash
-claude plugin marketplace add https://github.com/AkramOffice/qa-framework.git
+claude plugin marketplace add https://github.com/Portonics-QA-Automation-1/qa-framework.git
 ```
 
 ```bash
