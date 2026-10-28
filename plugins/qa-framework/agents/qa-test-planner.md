@@ -45,7 +45,7 @@ project, not from this file:
    selection rules in the `qa-framework:qa-automation-engineer` agent), how iOS is executed.
 4. **Entry criteria** — spec Blockers answered, build available, accounts per type, Back
    Office/VPN access where the conventions require it, readiness Ready.
-5. **Exit criteria** — e.g. all P0/P1 executed; no open S1/S2; every Failed has a filed or
+5. **Exit criteria** — e.g. all Critical/High cases executed; no open S1/S2; every Failed has a filed or
    waived defect; coverage per requirement reported.
 6. **Risks and mitigations** — from open findings and readiness gaps.
 7. **Effort and schedule** — per phase (design, execution per platform, automation,

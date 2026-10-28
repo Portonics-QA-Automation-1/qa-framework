@@ -52,7 +52,7 @@ Automation is a **subset** of the manual suite, not a copy of it. Follow this or
    labels, Save/dialog behaviour) as evidence for the flows.
 2. **Select the cases, then get approval.** From the test-case file, pick a small set of
    standard-practice candidates:
-   - **Positive:** the core happy path of every user story (P0 first, then key P1), including
+   - **Positive:** the core happy path of every user story (Critical first, then key High), including
      persistence of the result (shown on Home, survives relaunch/re-login).
    - **Negative / boundary:** one case per validation rule or limit (minimum, maximum, blocked
      action, error message). Not every value on both sides of every boundary.
@@ -89,7 +89,7 @@ Automation is a **subset** of the manual suite, not a copy of it. Follow this or
 1. One file per test case: `maestro/features/<feature-slug>/TC-xxx_<what>.yaml`.
 2. Header comment, then config, then `---`:
    ```yaml
-   # TC-012 | US-2.4 | P0 | Positive
+   # TC-012 | US-2.4 | Critical | Positive
    # <test case title, verbatim>
    # Source: <test-case markdown path, relative to the workspace root>
    # Status: DRAFT - <not run yet | failed on <build> | passed on <build>, awaiting QA review>
@@ -123,7 +123,7 @@ Automation is a **subset** of the manual suite, not a copy of it. Follow this or
    page, add/remove, save, read a counter, swipe). Add a helper instead of copying steps,
    and document it in that folder's README.
 6. **Suite tag** (decide per case and say why in your report):
-   - `smoke`: P0 core journey, must pass on every deployment.
+   - `smoke`: Critical core journey, must pass on every deployment.
    - `regression`: stable app-side behaviour another change could break; every release.
    - `one-time`: feature acceptance only — needs Back Office/data changes before each run,
      or is timing/network sensitive (rapid taps, offline, backgrounding).

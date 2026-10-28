@@ -165,7 +165,7 @@ Every table uses the same 12 columns:
 
 Example row (steps, test data and expected results aligned by number):
 
-| FEAT-0012-TC-004 | Android | Registered User | Verify that a registered user can add an item to their favourites | Functional | Positive | P0 | Logged in on the Home page; 3 items in Favourites | 1. —<br>2. Item: Sample Item A<br>3. — | 1. Open the product list.<br>2. Tap the heart icon on the item.<br>3. Open Favourites. | 1. The product list opens.<br>2. The heart icon turns filled and a "Saved" message appears.<br>3. Favourites shows 4 items including the item. | <App name> / <version> |
+| FEAT-0012-TC-004 | Android | Registered User | Verify that a registered user can add an item to their favourites | Functional | Positive | Critical | Logged in on the Home page; 3 items in Favourites | 1. —<br>2. Item: Sample Item A<br>3. — | 1. Open the product list.<br>2. Tap the heart icon on the item.<br>3. Open Favourites. | 1. The product list opens.<br>2. The heart icon turns filled and a "Saved" message appears.<br>3. Favourites shows 4 items including the item. | <App name> / <version> |
 
 `Section`: one of the allowed sections (default Android, iOS, BackOffice, Back End API
 Testing). `User / Account Type`: one of the project's account types (one per row).
@@ -175,9 +175,11 @@ is rejected with a resend option").
 
 `Test Type`: one or more of Functional, UI, Integration, API, Security, Performance,
 Accessibility, Compatibility, Reliability, Regression. `Scenario`: Positive, Negative,
-Boundary, Edge, State transition, Recovery. `Priority`: P0 (release blocker), P1 (critical
-path), P2 (important alternate/negative), P3 (lower-risk/polish) — set from risk and
-business impact, not just inherited from the story's own priority.
+Boundary, Edge, State transition, Recovery. `Priority` uses Execute.io's own names:
+Critical (release blocker), High (critical path), Medium (important alternate/negative),
+Low (lower-risk/polish) — set from risk and business impact, not just inherited from the
+story's own priority. They replace the older P0/P1/P2/P3 labels one-to-one (P0 = Critical,
+P1 = High, P2 = Medium, P3 = Low).
 
 End with a **Requirements traceability** table (`Requirement ID | Requirement | TC IDs`, one
 row per user story, CoS, acceptance criterion/scenario, FR, NFR and edge case — TC IDs or the

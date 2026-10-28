@@ -3,11 +3,12 @@
 The team's QA agent framework, packaged as a Claude Code plugin marketplace so every QA can
 install it once per machine and get updates with one command.
 
-It contains one plugin, **`qa-framework`**: 15 agents and 15 skills that cover the whole QA
+It contains one plugin, **`qa-framework`**: 16 agents and 16 skills that cover the whole QA
 lifecycle.
 
 | Stage | Skill (run as `/qa-framework:<skill>`) | Agent (`qa-framework:<agent>`) |
 |---|---|---|
+| User story from FRS | `qa-user-story` | `qa-user-story-writer` |
 | Requirement analysis | `qa-requirement-analysis` | `qa-requirement-analyst` |
 | Test plan | `qa-test-plan` | `qa-test-planner` |
 | Environment readiness | `qa-env-readiness` | `qa-env-readiness` |
@@ -186,8 +187,8 @@ qa-framework/
 ├── CHANGELOG.md
 └── plugins/qa-framework/
     ├── .claude-plugin/plugin.json       # plugin "qa-framework"
-    ├── agents/*.md                      # 15 agents
-    └── skills/<skill>/SKILL.md          # 15 skills
+    ├── agents/*.md                      # 16 agents
+    └── skills/<skill>/SKILL.md          # 16 skills (qa-user-story also has scripts/, template/, reference/)
 ```
 
 To check the plugin after a change:

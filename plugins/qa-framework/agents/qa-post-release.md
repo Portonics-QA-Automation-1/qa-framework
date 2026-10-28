@@ -32,7 +32,7 @@ present.
 
 ## Steps
 
-1. **Production smoke** (only with the QA member present): read-only P0 journeys
+1. **Production smoke** (only with the QA member present): read-only Critical journeys
    (login, Home loads, the released feature opens and shows data). The production account is
    entered by the QA member; any OTP comes from the route the conventions document (e.g. a
    Back Office lookup behind a VPN, with the QA member's own session). Never buy, transfer, top up or change settings/data in production. Evidence in

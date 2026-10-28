@@ -41,6 +41,10 @@ descriptions.
    update wiped steps and priority once). Every `sync_test_cases` entry carries title,
    preconditions, steps (action / test_data / expected_result per numbered step),
    priority, type, tags — built from the test-case file, never retyped by hand.
+   Send `priority` as Execute.io's system names `critical`, `high`, `medium`, `low` (the
+   UI shows Critical/High/Medium/Low). If a file still uses the older P0–P3 labels, map
+   them one-to-one: P0 → critical, P1 → high, P2 → medium, P3 → low. Never send `P0`–`P3`
+   as the stored value; for any other scheme, ask the QA member for the mapping first.
 4. **Titles show platform and account type**: `… (<Section>, <Account Type>)`, e.g.
    `… (Android, Registered User)`; tags include the section (`android|ios|backoffice|api`)
    and the account type in kebab-case (from the project's account types), plus suite tags

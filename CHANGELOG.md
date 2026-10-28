@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.3.0 — 2026-10-28
+
+- Test-case priority uses Execute.io's own names: Critical, High, Medium, Low. They replace
+  P0, P1, P2, P3 one-to-one, so QA members and Execute.io users see the same words.
+  `qa-test-designer` writes the new names. `qa-sync-manager` sends `critical`/`high`/
+  `medium`/`low` and maps any older P0–P3 file the same way, never storing `P0`–`P3`.
+  `qa-automation-engineer`, `qa-test-planner`, `qa-report-signoff` and `qa-post-release`
+  use the new names. Defect severity (S1/S2, "P0 defects") and story priority are unchanged.
+- New skill `/qa-framework:qa-user-story` and agent `qa-user-story-writer`: write a feature's
+  user story from its FRS as a single-sheet xlsx in the "User Story & Estimation Template", in
+  the BA's writing style, with mockup images in the Screen/MockUp column. The FRS is the only
+  source; non-FRS rows only on request, marked "Not in FRS". The skill ships the blank template,
+  the writing-style guide, an approved example story and Python scripts (FRS reader, sheet
+  builder). They run in `~/.cache/qa-framework/user-story-venv`, created on first use (needs
+  `python3`).
+
 ## 1.2.0 — 2026-10-28
 
 - Test cases follow the story: `qa-test-designer` reads each story's Expectation, Conditions

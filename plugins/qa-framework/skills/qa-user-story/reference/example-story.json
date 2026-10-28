@@ -1,0 +1,100 @@
+{
+  "sheet_name": "Toh Toh United Leaderboard",
+  "source": "Toh Toh United LeaderBoard.docx (FRS v1.1, 10 Sept 2026)",
+  "header": {
+    "project": "ATOM Store App",
+    "client": "ATOM Myanmar",
+    "created_by": "<creator email>",
+    "date_created": "2026-10-27",
+    "business_lead": "<Business Lead>",
+    "tech_lead": "<Tech Lead>",
+    "notes": "<Figma link>",
+    "epic": "Toh Toh United Leaderboard"
+  },
+  "rows": [
+    {
+      "sl": "1.0",
+      "feature": "Leaderboard Eligibility & Ranking Logic",
+      "as_a": "ATOM Store App Prepaid User",
+      "expectation": "I will be able to get Score/XP for every Level 3 match I play and see my position on the Leaderboard.",
+      "cos": "Leaderboard is only for ATOM Store App Prepaid users.\n\nPlayer will be eligible for the leaderboard ranking from game Level 3. Only Level 3 match outcome will be counted.\n\nScore/XP for each Level 3 match:\n1. Win = 3\n2. Draw = 1\n3. Loss = 0\n\nRanking will be based on 3 parameters:\n1. Accumulated Score/XP (1st parameter). Higher Score/XP will get the higher rank.\n2. Total Goals Count (1st tiebreaker). If Score/XP is same, the player with more total goals across all matches will get the higher rank.\n3. Completion Timestamp (2nd tiebreaker). If Score/XP and goals both are same, the player who completed the last Level 3 match earlier will get the higher rank.",
+      "ac": "After every Level 3 match, the Score/XP of the match outcome and the goals of the match will be added to the player's leaderboard record, along with the match completion time.\n\nExample:\nPlayer A and Player B both have 10 Score/XP and 19 Goals. Player A finished the last Level 3 match at 11:20 AM and Player B at 3:50 PM on the same day. So Player A will be Rank 1 and Player B will be Rank 2.\n\nPostpaid users and players below Level 3 will not be ranked.",
+      "note": "- Total goals means only the goals scored by the player, or also the goals of the opponent? Only from Level 3 matches?\n>> TBC\n\n- Will Score/XP, goals and rank reset to zero when a new season starts?\n>> TBC\n\n- Which timezone will be used for the timestamp and the season end time?\n>> TBC"
+    },
+    {
+      "sl": "2.0",
+      "feature": "Level 3 Match Result and Redirect to Leaderboard",
+      "as_a": "ATOM Store App Prepaid User",
+      "expectation": "I will be able to see my match result and instant prize after finishing Level 3, and go to the Leaderboard from the popup.",
+      "cos": "After finishing Level 3, user will see the Mystery Box popup along with the match result (Win, Draw or Loss).\n\nThen user will get the Instant Prize popup.\n\nBy clicking on the button from the popup, user will be redirected to the Leaderboard landing page.\n\nThere will also be a button or icon on the game level page to redirect the user to the Leaderboard.",
+      "ac": "User will see the Mystery Box popup with the match result for Win, Draw and Loss.\n\nUser will see the Instant Prize popup after the Mystery Box popup.\n\nBy clicking the button on the popup, user will land on the Leaderboard page, and the rank will include the match just played.\n\nFrom the game level page, user can open the Leaderboard by clicking the Leaderboard button/icon.",
+      "note": "- What will be the button text on the popup to open the Leaderboard?\n>> TBC\n\n- Can the user close the Instant Prize popup without going to the Leaderboard? If yes, where will the user land?\n>> TBC\n\nScreen flow and Figma UI will be shared by the business (FRS: \"will be shared soon\").\n\nMockup in column B is the sample from the earlier story. Where it differs from the FRS, the FRS text in this row wins (see CoS).",
+      "image": "example-images/mockup-row12.png"
+    },
+    {
+      "sl": "3.0",
+      "feature": "Leaderboard Page",
+      "as_a": "ATOM Store App Prepaid User",
+      "expectation": "I will be able to see the top players, my own rank and the remaining time of the season on the Leaderboard page.",
+      "cos": "Leaderboard title (e.g. Top 100, Top 500 or Top 1000) and the Season number (1, 2, 3 etc.) will be shown as configured in BackOffice.\n\nThere will be a banner at the top to show the monthly lucky draw program info. The banner will be clickable and redirect to the specific page (App or Web) for more info, e.g. lucky draw or winner info.\n\nCountdown timer will be shown to push the players to play more. The timer will be reset when the next season (lucky draw program) starts.\n\nThere will be a leaderboard table with 4 columns:\n1. Rank No#\n2. Player Name (as given by the user)\n3. Score/XP (based on accumulated match outcome)\n4. Total Goals (accumulated scored goals)\n\nIf the user is not in the top 10, the user's own rank will be pinned at the bottom with a sticky 'Continue Challenge' button.",
+      "ac": "User will see the title, season number, banner, countdown timer and the leaderboard table on the page.\n\nPlayers will be sorted by the ranking logic in row 1.0.\n\nIf the banner has a redirect link, clicking it will open that App or Web page. If there is no link, nothing will happen.\n\nIf the user is outside the top 10, the user's rank will be shown at the bottom in a sticky bar. If the user is in the top 10, no sticky bar will be shown.\n\nBy clicking 'Continue Challenge', user will be redirected to the game level page.",
+      "note": "- How many players will be listed in the table? Same as the title (e.g. Top 100)?\n>> TBC\n\n- What will the sticky bar show for a user who has no Level 3 match yet?\n>> TBC\n\n- What will be shown before the season starts and between two seasons?\n>> TBC\n\nMockup in column B is the sample from the earlier story. Where it differs from the FRS, the FRS text in this row wins (see CoS).",
+      "image": "example-images/mockup-row13.png"
+    },
+    {
+      "sl": "3.1",
+      "feature": "Previous Winners",
+      "as_a": "ATOM Store App Prepaid User",
+      "expectation": "I will be able to see the winners of the recent 3 seasons.",
+      "cos": "There will be a 'Previous Winners >' link on the Leaderboard page, next to the leaderboard table.\n\nBy clicking the link, user will be redirected to the Previous Winners page.\n\nIn the Previous Winners page, there will be season tabs for the recent 3 finished seasons (e.g. Season 3, Season 2, Season 1). The latest season will be selected by default.\n\nUnder the tabs, there will be an info text about the winners or the season.\n\nFor each season, winners from position 1 to 10 will be shown with:\n1. Position No#\n2. Player Name\n3. Masked mobile number (e.g. 09xxxxxxx96)\n4. Township / City / Country\n5. Prize image",
+      "ac": "User will see the 'Previous Winners >' link on the Leaderboard page.\n\nBy clicking the link, user will see the Previous Winners page with the latest season tab selected.\n\nBy clicking another season tab, user will see the winners of that season.\n\nBy clicking Back, user will be redirected to the Leaderboard page.",
+      "note": "Not in FRS v1.1. Kept from the earlier story; to be confirmed with BA.\n\n- Will the 'Previous Winners' link be hidden in Season 1 (no previous winners yet)?\n>> TBC\n\n- Will the winner list and info text come from BackOffice (upload) or from the system ranking?\n>> TBC\n\n- Is the number of winners always 10 for every season?\n>> TBC",
+      "image": "example-images/mockup-row14.png"
+    },
+    {
+      "sl": "4.0",
+      "feature": "Leaderboard Terms & Conditions",
+      "as_a": "ATOM Store App Prepaid User",
+      "expectation": "I will be able to read the Terms and Conditions of the Leaderboard in my app language.",
+      "cos": "Terms and Conditions for the Leaderboard will be configurable from BackOffice.\n\nT&C will be supported in three languages: English, Myanmar and Chinese.",
+      "ac": "User will see the T&C in the selected app language (English, Myanmar or Chinese).\n\nT&C content will be updated in the app as per the BackOffice configuration.",
+      "note": "- From where will the user open the T&C on the Leaderboard page?\n>> TBC (Figma)"
+    },
+    {
+      "sl": "5.0",
+      "feature": "Campaign Stopped / Error Popup",
+      "as_a": "ATOM Store App Prepaid User",
+      "expectation": "I will be informed with a popup when the Leaderboard campaign is stopped or something unexpected happens.",
+      "cos": "When the campaign is stopped, user will see a popup. The popup message will be configured from BackOffice.\n\nUser will also see a popup in case something unexpected happens.\n\nThere will be disable and enable function for the whole Leaderboard feature in BackOffice.",
+      "ac": "When the campaign is stopped, user will see the popup with the message configured in BackOffice.\n\nWhen the Leaderboard feature is disabled from BackOffice, user will not be able to access the Leaderboard.",
+      "note": "- What is the difference between 'campaign stopped' and 'feature disabled' for the user?\n>> TBC\n\n- What will be the popup text for the unexpected error case?\n>> TBC"
+    },
+    {
+      "sl": "6.0",
+      "feature": "BackOffice - Leaderboard Configuration",
+      "as_a": "BackOffice User",
+      "expectation": "I will be able to configure the Leaderboard campaign from BackOffice.",
+      "cos": "BackOffice user will be able to configure:\n1. Leaderboard banner with redirect link (App or Web page). The redirect link is optional, not mandatory.\n2. Campaign schedule for the countdown timer.\n3. Season number (1, 2, 3 etc.).\n4. Leaderboard title (e.g. Top 100, Top 500 or Top 1000).\n5. Terms and Conditions in English, Myanmar and Chinese.\n6. Campaign stopped popup message.\n7. Enable / Disable of the whole Leaderboard feature.",
+      "ac": "After saving in BackOffice, the changes will reflect in the app.\n\nBanner can be saved without a redirect link.\n\nWhen the next season starts, the countdown timer will be reset as per the new schedule.",
+      "note": "- Is there any image size/format limit for the banner?\n>> TBC"
+    },
+    {
+      "sl": "7.0",
+      "feature": "BackOffice - Manual Repush of Match Result",
+      "as_a": "BackOffice User",
+      "expectation": "I will be able to manually repush a player's match result to fix the Leaderboard ranking.",
+      "cos": "Manual repush function will be available in BackOffice for the match result XP (Win, Draw, Loss) and goal score count, along with the timestamp.\n\nAfter repushing, it will reflect in the Leaderboard ranking.",
+      "ac": "After a repush, the player's Score/XP, total goals and rank will be updated in the app Leaderboard.",
+      "note": "- Will repush be done for one MSISDN or in bulk (file upload)?\n>> TBC\n\n- Will repush add to the existing record or replace it? Is there any audit log?\n>> TBC"
+    },
+    {
+      "sl": "8.0",
+      "feature": "Report - TTU Daily Player Leaderboard Report",
+      "as_a": "BackOffice User",
+      "expectation": "I will be able to get the daily player leaderboard report.",
+      "cos": "System will generate 'TTU daily player leaderboard reports' daily (Day -1).\n\nReport will be shared in the MyTelenorAppReport shared folder.",
+      "ac": "Report for the previous day will be available in the shared folder every day.",
+      "note": "Required info:\n1. Report columns\n>> TBC\n2. File name convention\n>> TBC\n3. Analytics events (FRS section is empty)\n>> TBC"
+    }
+  ]
+}

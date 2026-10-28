@@ -18,7 +18,7 @@ or write account identifiers, OTPs, passwords, keys or tokens.
 ## What to gather
 
 - Test execution results: pass/fail/blocked/not-run counts, ideally broken down by priority
-  (P0/P1/P2/P3) and by feature/area.
+  (Critical/High/Medium/Low; older suites may still say P0/P1/P2/P3) and by feature/area.
 - Open defects linked to this release: severity, status, whether a workaround exists.
 - Coverage gaps: anything in the test plan marked `N/A`/`Partial`/not yet executed, and why.
 - Known risks carried over from requirement analysis or impact analysis for this release
