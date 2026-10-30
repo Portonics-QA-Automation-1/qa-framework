@@ -12,7 +12,8 @@ description: Write Maestro flows for approved test cases in the workspace's maes
    is missing, have the `qa-framework:qa-automation-engineer` build it using its "Which cases to automate"
    rules (core positive per story + one negative per limit/validation, ~25–40% of the unique scenarios;
    no duplicate account-type/platform variants, visual, BackOffice, timing cases; disputed
-   failures and blocked cases "On hold"). Show it and wait for the QA member's yes. Automate
+   failures and blocked cases "On hold"; cases failed by a bug "Waiting on fix" until the retest
+   passes). Show it and wait for the QA member's yes. Automate
    only rows in the `Selected` sheet with Status "To write" (or the TC ids named, if they are
    in that sheet).
 2. **Check the framework.** The workspace must have `maestro/` (with `README.md`, `scripts/run.sh`,

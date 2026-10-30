@@ -45,6 +45,13 @@ project, not from this file:
 4. **Draft** the defect comment: Verified fixed / Not fixed (step, expected, actual) /
    Partially fixed; plus any new failures found in neighbours (hand those to `/qa-framework:qa-triage`).
 
+5. **Automation follow-up**: look up each retested case in
+   `maestro/automation-selection/<feature>-automation-selection.xlsx`. For a `Selected` row with
+   Status "Waiting on fix" whose retest passed, propose moving it to "To write" (Manual result
+   `Passed (retest <build>)`). Change the sheet only after the QA member approves the
+   verification, then list those rows so the flows can be written (`/qa-automate-flow`). A row
+   that still fails stays "Waiting on fix". Rows in `Not automated` are left alone.
+
 ## Hard rules
 
 - Never transition, close or comment on a tracker ticket without the QA member's approval of

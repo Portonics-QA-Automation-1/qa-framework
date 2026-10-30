@@ -71,12 +71,16 @@ Automation is a **subset** of the manual suite, not a copy of it. Follow this or
    failure that depends on an open requirement question, or a product limit that differs
    from the story) is listed as **Selected – on hold** with the reason. Write its flow only
    after the BA/dev confirms the expected behaviour. Blocked cases stay on hold until the
-   blocker is gone.
+   blocker is gone. A case that **failed because of a bug** (expected result not disputed)
+   is listed as **Selected – Waiting on fix** with the defect key. Never write its flow against
+   the broken behaviour: it moves to "To write" only after the retest on a fixed build passes
+   and the QA member approves that verification (`qa-retest` proposes the change).
 5. **Selection sheet.** Save the selection as an Excel file in the framework:
    `maestro/automation-selection/<feature-slug>-automation-selection.xlsx`, with two sheets:
    - `Selected`: TC ID | Execute.io ID | Section | User / Account Type | Test Description |
      Scenario | Priority | Positive/Negative | Manual result (round) | Suite tag | Flow file |
-     Status (To write / On hold / Written / Validated) | Reason selected / on hold.
+     Status (To write / On hold / Waiting on fix / Written / Validated) | Reason selected /
+     on hold / defect key.
    - `Not automated`: TC ID | Execute.io ID | Section | User / Account Type | Test Description |
      Reason (one of: duplicate variant, visual/manual-only, BackOffice set-up, timing/network,
      blocked: <why>, platform not available).

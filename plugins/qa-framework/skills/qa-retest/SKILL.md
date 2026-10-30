@@ -14,3 +14,6 @@ Argument: `$ARGUMENTS` — the defect, the build containing the fix, and the Exe
 2. Launch the `qa-framework:qa-retest` subagent; show the retest scope it proposes before execution.
 3. Present the outcome per case and the drafted defect comment. Post it to the defect
    tracker (or change the ticket status) only after the QA member approves the exact text.
+4. If retested cases were "Waiting on fix" in the automation selection sheet and now pass, show
+   the proposed move to "To write". After the QA member's yes, update the sheet and ask whether
+   to write those flows now (`/qa-automate-flow`).
