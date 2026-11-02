@@ -3,7 +3,7 @@
 The team's QA agent framework, packaged as a Claude Code plugin marketplace so every QA can
 install it once per machine and get updates with one command.
 
-It contains one plugin, **`qa-framework`**: 16 agents and 16 skills that cover the whole QA
+It contains one plugin, **`qa-framework`**: 16 agents and 17 skills that cover the whole QA
 lifecycle.
 
 | Stage | Skill (run as `/qa-framework:<skill>`) | Agent (`qa-framework:<agent>`) |
@@ -24,6 +24,7 @@ lifecycle.
 | Release-readiness report | `qa-report-signoff` | `qa-report-signoff` |
 | Post-release check | `qa-post-release` | `qa-post-release` |
 | Real-user exploration | `qa-real-user-test` | `qa-real-user` |
+| Whole feature, requirement to release | `qa-feature-pipeline` | (runs the agents above) |
 
 The agents are **project-neutral**. They hold no product names, test accounts, phone numbers or
 keys. Everything project-specific comes from the project's QA workspace and from Execute.io.

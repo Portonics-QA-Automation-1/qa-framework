@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.0 — 2026-11-02
+
+- New skill `/qa-framework:qa-feature-pipeline`: runs one feature through the whole STLC with the
+  agents above (requirement analysis → post-release), stops at every QA approval gate, and keeps
+  `pipeline/<feature>/status.md` ("Waiting on QA" list) and `metrics.csv` (AI and QA minutes per
+  stage). Modes: `start`, `status`, `build <apk|latest>` (smoke, new-feature cases, retest of
+  fixed bugs, regression) and `report` (management report). It ships templates for the three
+  files. The VPN check runs only when the project conventions name one.
+- Automation selection gets the row status **Waiting on fix**: a case failed by a bug gets its
+  flow only after `/qa-framework:qa-retest` passes on a fixed build and the QA member approves
+  the verification (`qa-automation-engineer`, `qa-automate-flow`, `qa-retest`).
+
 ## 1.3.0 — 2026-10-28
 
 - Test-case priority uses Execute.io's own names: Critical, High, Medium, Low. They replace
