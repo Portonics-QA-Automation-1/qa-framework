@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased (2.0.0, phase 2) — 2026-11-03
+## 2.0.0 — 2026-11-03 (phases 1 and 2)
 
 - Every agent has an "Agent protocol (qa-framework 2.x)" section: a QA member's direct instruction comes first
   (overrides workflow rules, never the hard rules); never stop without a way forward (`NEEDS_INPUT` with options and
