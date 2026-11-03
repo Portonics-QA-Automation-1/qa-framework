@@ -1,5 +1,41 @@
 # Changelog
 
+## Unreleased (2.0.0, phase 1) — 2026-11-03
+
+Design: `docs/framework-v2-design.md` (approved by the QA lead 2026-11-03).
+
+- **Agent protocol** `reference/agent-protocol.md`: task and result contract (`DONE`, `NEEDS_APPROVAL`,
+  `NEEDS_INPUT`, `BLOCKED`, `PARTIAL`, always with options and a recommendation), preflight questions before
+  any manual test (build, environment, target BrowserStack / device / emulator, single or parallel, cases,
+  result destination, accounts and data), login per target, ask before marking Blocked or Failed, a hard QA
+  verification gate after every round, approval before a stage's agent starts, next step proposed after every
+  task, CONTEXT.md updated by every task.
+- New skill `qa-workspace-init`: creates or upgrades a project workspace (layout, CLAUDE.md, conventions
+  templates for environments, integrations and gates, feature status page) and its brain.
+- Skill `workspace-brain` now ships in the plugin (project-neutral wording).
+- New skill `qa-browserstack-round` and agent `qa-browserstack-executor`: agentic manual round on BrowserStack
+  App Live, Android and iOS in parallel, results to Execute.io or the workspace, stops at the verification gate.
+  Scripts `bs_upload.py`, `results_sheet.py` (five statuses incl. Needs Review), `setup_venv.sh`.
+- Rules merged from older local copies, in neutral wording: pop-up guard rule (`qa-automation-engineer`,
+  `qa-automate-flow`); tracker field fallbacks, priority scale and "no invented test case" (`qa-defect-filer`);
+  optional database-level sync verification (`qa-sync-manager`); a preprod/prod OTP is entered by the QA member
+  unless the project's conventions explicitly allow an agent lookup (`qa-manual-executor`, `qa-post-release`,
+  `qa-regression-runner`).
+- Retest (`qa-retest` agent and skill): a recheck of a fixed build always covers the reported issues **plus
+  the related area** (neighbours, impact of the fix, the feature's core passed cases); new failures are reported
+  separately as possible regressions from the fix; ends at the verification gate.
+- Automation (`qa-automation-engineer`, `qa-automate-flow`): starts only after the QA member says yes to
+  automating a verified feature; the agent decides the selection and suites (new suite tag **sanity** next to
+  smoke / regression / one-time), shows it, and the QA member may change it; each case needs a QA-confirmed
+  validation point and every flow ends with a labelled assertion; flows run green, then the agent asks to sync
+  them to Execute.io.
+- **Feature stable gate** (protocol 8b): agents offer automation only when a feature is stable (verified failures
+  fixed and retested, no open requirement question changing behaviour, design final, last round passed and
+  verified, known issues deferred by QA); a QA member's direct instruction to automate is always followed, with
+  the open items stated once. Flows never match a bug. `gates.md` and `feature-status.md` templates record it.
+- Protocol: any write to an external system needs the QA member's yes through the Master Agent at that moment
+  (sections 7, 8a, 8b).
+
 ## 1.4.0 — 2026-11-02
 
 - New skill `/qa-framework:qa-feature-pipeline`: runs one feature through the whole STLC with the

@@ -89,9 +89,12 @@ session asks the questions and passes the answers and the approval to you.
 5. Create the ticket with `create_ticket`:
    - work type Bug, title, description;
    - reporter = the QA member;
-   - assignee, components, sprint, parent if any, priority, labels;
+   - assignee, components, sprint, parent if any, priority (in the tracker's scale from
+     `value_guide`, e.g. Karmo 1 = highest … 5 = lowest), labels;
    - all custom fields from the draft.
 
+   If `create_ticket` has no parameter for a field (e.g. components) or rejects one, set it right
+   after creating with `update_tickets` (ticket_keys = [the new key], e.g. component_ids = [...]).
    Create exactly one ticket. If it fails, report the error; do not retry with guessed values.
 6. Attach evidence files if the connector supports it, and link the parent or related tickets
    (`manage_ticket_link`). If attaching isn't possible, list the files for the QA member to drag in.
@@ -105,5 +108,7 @@ session asks the questions and passes the answers and the approval to you.
 - Never put an unmasked account identifier, OTP, password, token or API key in Karmo or in the
   draft.
 - Never guess an assignee, component or sprint. They come from the QA member.
+- If the issue has no test case (found in general testing), leave Test Case / Test Result empty and
+  add no TC id, tag or label. Never invent a test case reference.
 - Severity and priority follow the workspace rules. If the evidence is too thin to judge, say so
   and choose the lower level with a note.

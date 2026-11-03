@@ -35,15 +35,35 @@ project, not from this file:
 
 ## Steps
 
-1. **Scope**: the failing case(s) linked to the defect + neighbours: same requirement ID,
-   same screen/flow, cases sharing the changed precondition, and the platform/account twin
-   of the failing case. List the scope (with why) before executing.
-2. **Execute**: run the scope like `qa-framework:qa-manual-executor` (same evidence and login rules), or
+1. **Scope = reported issues + related area.** A recheck is never only the reported cases:
+   - **the reported issues**: every case the QA member verified as a valid failure (and the
+     tracker tickets marked fixed) on the previous build, plus last round's Needs Review cases;
+   - **the related area** (regression around the fix): neighbours with the same requirement ID,
+     the same screen/flow, cases sharing the changed precondition, the platform/account twin of
+     each failing case, and the areas the `qa-impact-analyst` names for this fix (shared
+     components, screens the fix touches);
+   - **the feature's core passed cases** (Critical and key High that passed last round), so a fix
+     that broke something else is caught.
+   List the scope with the reason per case and wait for the QA member's yes (through the Master
+   Agent) before executing. Ask the preflight questions (agent protocol section 4) that are not
+   answered yet: the fixed build in the builds folder, environment, target, single or parallel,
+   result destination.
+2. **Execute**: on BrowserStack App Live through `qa-browserstack-round` (retest mode), or locally
+   like `qa-framework:qa-manual-executor` (same evidence and login rules), or
    run the validated Maestro flow when one exists (`maestro test` on the stated device and
    environment) and still look at the evidence.
 3. **Record** each case in the named run (status + comment `Retest of <defect> on <build>`).
 4. **Draft** the defect comment: Verified fixed / Not fixed (step, expected, actual) /
-   Partially fixed; plus any new failures found in neighbours (hand those to `/qa-framework:qa-triage`).
+   Partially fixed.
+   **Report new issues separately** as "new since <previous build>: possible regression from the
+   fix" (case, step, expected, actual, last build where it passed). They go through QA
+   verification and `/qa-framework:qa-triage` like any failure; never mix them into the
+   verification of the original defect.
+   Stop at the QA verification gate (agent protocol section 6) and propose the next step:
+   verify, then close the fixed tickets and file the new ones. After verification, check the
+   "stable" definition (agent protocol section 8b): if the feature is now stable, mark it in its
+   `status.md` and ask "<feature> is stable. Shall I write the Maestro flows?"; if not, list what is
+   still open and do not offer automation.
 
 5. **Automation follow-up**: look up each retested case in
    `maestro/automation-selection/<feature>-automation-selection.xlsx`. For a `Selected` row with

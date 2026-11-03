@@ -42,7 +42,8 @@ Workspace `CLAUDE.md`, `conventions/environments.md` (devices, builds, Firebase)
    `reorder` only run on the calibrated size stated in the framework README.
 3. **Smoke first**: run tag `smoke` on one device for the chosen environment (staging by
    default; environments whose accounts are entered at run time need the QA member present
-   for the account, with any OTP via the route the project conventions document). If any smoke flow fails, stop, triage it, and report —
+   for the account and to enter any OTP themselves, unless the project conventions explicitly
+   allow an agent OTP lookup). If any smoke flow fails, stop, triage it, and report —
    don't run regression on a broken build.
 4. **Regression**: run tag `regression` (exclude `wip`, `manual`, and `one-time` unless asked),
    sharded across the available emulators (`maestro test --shard-split <n>` or one

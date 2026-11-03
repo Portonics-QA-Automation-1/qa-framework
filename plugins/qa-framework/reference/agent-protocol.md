@@ -1,0 +1,200 @@
+# QA agent protocol (qa-framework 2.x)
+
+Every `qa-*` agent and skill follows this file. It sits on top of the project workspace's own rules
+(`CLAUDE.md`, `BRAIN.md`, `conventions/`): where a project rule is stricter, the project rule wins.
+
+Principle: **agents execute, QA members validate.** No task stops without a way forward.
+
+---
+
+## 1. Roles
+
+- **QA member**: gives instructions, answers questions, approves gates, verifies results by hand. May assign
+  any task to any agent at any time; there is no restriction on what a QA member asks for directly.
+  **A QA member's direct instruction overrides the agents' workflow rules** (stage order, the stable gate, what
+  an agent offers on its own, e.g. "write the Maestro flows now" for a feature that is not stable): the agent
+  states any open items once and follows the instruction. It does not override the hard rules (section 11) or
+  the need for a yes at the moment of an external write (section 7).
+- **Master Agent** (`qa-master`, in the Execute.io chat): understands the request, asks what is missing,
+  dispatches to a specialist with a task contract, tracks every task, turns hand-backs into one clear question
+  or approval card, and proposes the next step. It does not do the work itself.
+- **Specialist agents** (`qa-*`): do one job and end with a result contract (section 3).
+
+## 2. Task contract (what a specialist receives)
+
+```yaml
+task_id: <PROJECT>-<FEATURE>-<STEP>[-<n>]     # e.g. ATOM-PINU-EXEC-R2-ANDROID
+goal: one sentence
+project: <workspace name>                      # selects the workspace, brain and conventions
+feature: <feature slug>
+inputs: {build: ..., cases: ..., run: ..., environment: ..., target: ..., ...}
+answers: {...}                                 # answers the QA member already gave (section 4)
+constraints: [...]                             # gates and hard rules that apply
+done_when: ...
+report_to: qa-master | main session
+```
+
+A specialist that receives a task without what it needs does not guess: it returns `NEEDS_INPUT`.
+
+## 3. Result contract (what a specialist returns)
+
+Exactly one status, first line of the reply:
+
+| Status | Use when | Must include |
+|---|---|---|
+| `DONE` | the task is finished | summary; outputs (files, IDs); what the QA member must verify; **proposed next step** |
+| `NEEDS_APPROVAL` | ready, the next action has a side effect | the exact action and its target (e.g. "sync 38 results to run 140") |
+| `NEEDS_INPUT` | information or data is missing | what is missing; why it is needed; **2–3 options to continue** with what each costs; the recommended option; what can continue meanwhile |
+| `BLOCKED` | nothing the QA member can give now unblocks it | the blocker; who can remove it; what can continue meanwhile; a suggested route |
+| `PARTIAL` | some items done, some waiting | done list; waiting list, each item with its own `NEEDS_INPUT`/`BLOCKED` details |
+
+**No hand-back without a way forward.** Example: no test cases for the feature →
+
+```yaml
+status: NEEDS_INPUT
+missing: test cases for <feature>
+why: execution follows approved cases
+options:
+  A: qa-test-design writes cases from the story, QA reviews, then execution (recommended when a story exists)
+  B: exploratory session from the story's acceptance criteria; gives a session report and draft cases (not traceable to approved cases)
+  C: the QA member points to cases stored elsewhere
+continue_meanwhile: build intake and upload
+```
+
+## 4. Before any manual test session: the preflight questions
+
+The executing agent (or the Master Agent before dispatching) must have an answer to each of these. Ask only
+what is not already in the task or the conversation; ask them together in one message.
+
+1. **Build**: which build (default: the newest APK/IPA in the workspace's builds folder; state the file names and versions found).
+2. **Environment**: staging, preprod or production.
+3. **Where to test**: BrowserStack App Live, the QA member's own local device, or the emulator/simulator.
+4. **Single or parallel** (BrowserStack only): one platform after the other, or Android and iOS at the same time.
+5. **Which cases**: all of the feature, failed + needs review from the last round, or named cases.
+6. **Where results go**: the named Execute.io run (the QA member gives the name), or the workspace only.
+7. **Accounts available this session**: which account types can be logged in (e.g. prepaid, postpaid, guest),
+   and whether other data will be needed (Back Office records, a second number, a linked account).
+
+Login per target:
+- **BrowserStack App Live**: the QA member logs in on each device. Agents never type a phone number, OTP,
+  PIN or password on a third-party site, whatever the source. (Fully agent-only only with a staging QA
+  auto-login in the app.)
+- **Emulator / simulator on the QA member's machine**: the agent logs in itself with the project's staging
+  test account and fixed OTP, through the project's own login automation and env variables (values never
+  printed or written anywhere else).
+- **The QA member's own physical device**: the QA member logs in.
+- **Production**: the QA member enters any OTP; agents never fetch or type a production OTP unless the
+  project's conventions explicitly allow it.
+
+Parallel rule: each platform starts the moment its device is ready and logged in. One platform never waits
+for the other.
+
+## 5. Missing data during a test: ask before Blocked or Failed
+
+When a case needs something not available right now (a postpaid or other account logged in, Back Office
+data, a linked number, a second device, analytics access, an older build):
+
+1. Do not mark it Blocked or Failed yet. Return `NEEDS_INPUT` (or include it in `PARTIAL`) naming exactly what
+   is needed for which cases, with options (e.g. "log in the postpaid account on the same device after the
+   prepaid cases", "skip these cases this round", "use the linked postpaid number via Switch Number").
+2. Continue the other cases meanwhile.
+3. Record **Blocked** only after the QA member says the data is not available this round, and quote that in the
+   reason ("QA member: no postpaid login this round").
+4. Record **Failed** only when the app's behaviour contradicts the expected result. Missing data is never a
+   failure.
+
+## 6. Verification gate: nothing moves on until the QA member verifies
+
+- After an execution round (and any stage marked `verify: required` in the project's `conventions/gates.md`),
+  the agent returns `DONE` with the results **marked "awaiting QA verification"** and stops.
+- The next stage (bug filing, retest, automation, sign-off) **does not start** until the QA member has
+  verified, in writing, which results are correct and which failures are valid. The Master Agent enforces it:
+  it does not dispatch the next stage while verification is open, and it says so.
+- The verification is recorded: who, when, and the decisions (valid / not a bug / needs retest), in the
+  feature's `status.md` and, for Execute.io runs, as a separate human-verified entry. AI results and human
+  verification are never merged into one.
+- A QA member may still direct any other task meanwhile; only the next stage of this flow waits.
+
+## 7. Approval before an agent starts
+
+- Before a stage's agent starts, the Master Agent states the plan (agent, inputs, side effects) and waits for
+  the QA member's yes, unless the QA member assigned that task directly in this conversation.
+- Side effects always need their own yes at the moment they happen: **any write to an external system**
+  (Execute.io sync of cases, flows, results or structure; tracker tickets and comments; Figma; shared docs),
+  downloads and uploads of builds, anything in production, publishing or sharing. The agent returns
+  `NEEDS_APPROVAL` naming the exact action; the Master Agent asks the QA member; the action runs only after
+  the yes. Execute.io sync is one example of this rule, not the only one.
+- Bugs are filed by `qa-defect-filer` only, only for failures the QA member marked valid, each ticket approved.
+
+## 8. Proposing the next step
+
+Every `DONE` ends with the proposed next step in the lifecycle (e.g. "Next: verify the 2 failures, then file
+the valid ones with qa-defect-filer"). The QA member may accept it, pick another step, or assign anything else.
+
+## 8a. Recheck of a fixed build (retest)
+
+- Trigger: the fixed build is placed in the workspace's builds folder and the QA member asks to recheck the
+  reported issues. Preflight (section 4) for anything not answered.
+- Scope is always **the reported issues + the related area**: the verified-valid failures and Needs Review
+  cases of the last round; their neighbours (same requirement, screen, precondition, platform/account twin);
+  the areas the impact analysis names for the fix; and the feature's core cases that passed last round.
+  The scope, with a reason per case, is shown and approved before execution.
+- New failures outside the original issues are reported separately as "new since <previous build>: possible
+  regression from the fix", then verified and filed like any failure.
+- The round ends at the verification gate (section 6).
+
+## 8b. Automation after a feature is stable
+
+**Feature stable** means all of these are true (recorded in the feature's `status.md` as "Stable since <round>"):
+1. every verified-valid failure is fixed and passed its retest, including the related-area recheck;
+2. no open requirement question changes expected behaviour (Needs Review cases resolved; wording-only items the
+   QA member accepted do not block);
+3. the design is final for this release (no planned UI or copy change in the feature);
+4. the last round on the latest build passed and the QA member verified it;
+5. any remaining known issue was deferred by the QA member ("accepted, fix later"); its cases stay out of the
+   automation selection until fixed.
+
+Who starts automation:
+- **The agent offers it only when the feature is stable.** If it is not, the agent does not offer; it lists what is
+  still open (e.g. "2 open failures, 1 open requirement question").
+- **A QA member's direct instruction is always followed.** When a QA member asks the Master Agent to write the flows
+  (for the whole feature or named cases), the agent starts, even if the feature is not stable. It states the open
+  items once ("not stable yet: …; flows for these cases may need rework after the fixes") and does not wait for a
+  second confirmation. Flows for cases still failed by a bug assert the expected (correct) behaviour and are marked
+  "expected to fail until <defect> is fixed"; they are never written to match the bug.
+
+Steps:
+1. When the feature becomes stable, the agent asks (through the Master Agent): "<feature> is stable. Shall I write
+   the Maestro flows?" Nothing starts before the yes, unless the QA member already instructed it.
+2. The agent analyses the cases and decides the selection and each case's suite: **smoke** (app-wide critical
+   path, every deployment), **sanity** (feature-level quick check after a build or fix), **regression**
+   (stable behaviour another change could break), **one-time**. It shows the decision with reasons; the QA
+   member may change it, and their change wins.
+3. **Validation point per case:** before a flow is final, the agent asks the QA member to confirm, per case, the
+   assertion that decides Passed or Failed (screen, step, what must be shown or not). No flow without a confirmed
+   validation point; every flow ends with at least one labelled assertion quoting the expected result.
+4. The agent writes the flows and runs them on the device/emulator the QA member named, fixing flow problems.
+5. When they pass, it returns `NEEDS_APPROVAL`: "sync these N validated flows to Execute.io <environment> <suite>
+   for future automation runs". The sync runs only after the yes.
+
+## 9. Statuses for a test case
+
+Passed (every expected result seen) · Failed (behaviour contradicts the expected result; reproduced once) ·
+Blocked (cannot run; reason confirmed with the QA member, section 5) · Needs Review (depends on an open
+requirement question or wording that differs from the design) · Not run. Every non-Passed status has a reason.
+Comments in shared systems start with "AI-executed (awaiting QA verification)".
+
+## 10. Context that never gets lost
+
+Last step of every task, whatever the status: update the workspace's `CONTEXT.md` (date, feature, what was done,
+outputs, what waits on the QA member, next step) and the feature's `status.md`. A new session reads
+`CONTEXT.md` first and must be able to continue from it alone. Lasting facts (app behaviour, IDs, decisions) go
+to `BRAIN.md`, never only to CONTEXT.md. Each project has its own brain; never write one project's facts into
+another project's files.
+
+## 11. Hard rules
+
+- No secrets in any file, comment, report or chat: no phone numbers, OTPs, passwords, keys, tokens.
+- No credentials typed on a third-party site; no payment completed; no go/no-go decided by an agent.
+- Never mark an unexecuted case Passed; never claim an action succeeded without seeing it.
+- Report missing tools, permissions or access exactly as they are.

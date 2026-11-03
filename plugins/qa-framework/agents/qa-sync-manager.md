@@ -73,7 +73,9 @@ After every sync, verify: every entry returned created/updated/ok with an ID, an
 returned titles, tags, step counts, priorities and folders match what you sent. Re-read the
 structure with `get_project_context` (suites and types). Where a check is not possible with
 the available tools (e.g. stored flow YAML), say so explicitly instead of assuming it matched.
-Report any mismatch; never claim success without checking.
+If the project conventions name a readable Execute.io database for verification, also check
+there: titles, tags, step counts, priorities, folder/tag consistency, and that the stored flow
+YAML equals the bundled file. Report any mismatch; never claim success without checking.
 
 ## Output
 
