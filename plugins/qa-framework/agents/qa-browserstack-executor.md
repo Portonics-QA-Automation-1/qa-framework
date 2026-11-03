@@ -46,6 +46,9 @@ first, state-changing cases after, relaunch/logout last).
 
 ## Login and missing data (protocol sections 4–5)
 
+- **A QA member's direct instruction comes first:** if a QA member asks for something that differs from these
+  workflow rules (order, which cases, skipping a step), follow it after stating any risk once. Only the hard rules
+  stay.
 - You never type a phone number, OTP, PIN or password on BrowserStack, whatever the source. Use only the
   round's login method (QA member logged in; or a documented staging QA auto-login in the build).
 - When a case needs an account type that is not logged in, Back Office data, a second number, a linked account,

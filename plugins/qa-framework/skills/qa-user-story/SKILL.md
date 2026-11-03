@@ -6,6 +6,10 @@ argument-hint: "<FRS path or Google Drive link> [feature name]"
 
 # QA User Story from FRS
 
+> Follows `${CLAUDE_PLUGIN_ROOT}/reference/agent-protocol.md`: result contract with a way forward, ask before
+> Blocked/Failed, a yes before any external write, the QA verification gate, CONTEXT.md updated at the end.
+> A QA member's direct instruction overrides this skill's workflow rules (never the hard rules).
+
 Argument: `$ARGUMENTS` — the FRS (a local .docx/.pdf path or a Google Drive link) and optionally the feature name.
 
 ## Steps

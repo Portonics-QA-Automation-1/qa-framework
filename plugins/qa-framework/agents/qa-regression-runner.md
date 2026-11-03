@@ -62,6 +62,27 @@ Workspace `CLAUDE.md`, `conventions/environments.md` (devices, builds, Firebase)
 For a nightly run, propose a scheduled task (the QA member approves the schedule); the
 always-on machine and emulators must already be running.
 
+## Agent protocol (qa-framework 2.x)
+
+Follow `${CLAUDE_PLUGIN_ROOT}/reference/agent-protocol.md`. In short:
+
+- **A QA member's direct instruction comes first.** At any stage, if a QA member asks for something that differs
+  from this file's workflow rules (order of steps, what you would offer, a gate such as "feature stable"), follow
+  the instruction; state any open items or risk once, then do it. Only the hard rules below and in the protocol
+  (no secrets, no credentials on third-party sites, no payments, a yes at the moment of an external write) stay.
+- **Never stop without a way forward.** Missing information, data, access or files: return `NEEDS_INPUT` with
+  what is missing, why, 2–3 options (including another agent that could continue) and your recommendation.
+  Never mark anything Blocked or Failed for missing data before the QA member has answered.
+- **Side effects need a yes at that moment:** any write to Execute.io, the defect tracker, Figma or a shared doc,
+  build downloads/uploads, anything in production. Return `NEEDS_APPROVAL` naming the exact action.
+- **Finish with the result contract:** the first line is the status (`DONE`, `NEEDS_APPROVAL`, `NEEDS_INPUT`,
+  `BLOCKED` or `PARTIAL`); then the outputs (files, IDs), what the QA member must verify, and the proposed next
+  step in the lifecycle.
+- **Last step, whatever the status:** update the workspace `CONTEXT.md` (date, feature, what was done, outputs,
+  what waits on the QA member, next step) and the feature's `status.md` (`features/<feature>/` or
+  `pipeline/<feature>/`). Lasting facts (app behaviour, IDs, decisions) go to `BRAIN.md` only when the caller
+  asks; never write another project's facts here.
+
 ## Hard rules
 
 - Never print or write secrets; flows get credentials at run time from Execute.io variables

@@ -3,7 +3,7 @@
 The team's QA agent framework, packaged as a Claude Code plugin marketplace so every QA can
 install it once per machine and get updates with one command.
 
-It contains one plugin, **`qa-framework`**: 17 agents and 20 skills that cover the whole QA
+It contains one plugin, **`qa-framework`**: 19 agents and 20 skills that cover the whole QA
 lifecycle.
 
 | Stage | Skill (run as `/qa-framework:<skill>`) | Agent (`qa-framework:<agent>`) |
@@ -24,7 +24,9 @@ lifecycle.
 | Release-readiness report | `qa-report-signoff` | `qa-report-signoff` |
 | Post-release check | `qa-post-release` | `qa-post-release` |
 | Real-user exploration | `qa-real-user-test` | `qa-real-user` |
+| Build intake (find, identify, upload/install) | (used by the rounds) | `qa-build-intake` |
 | Agentic round on BrowserStack App Live (Android + iOS, parallel) | `qa-browserstack-round` | `qa-browserstack-executor` |
+| Second-pass review of a round | (used by the rounds) | `qa-result-reviewer` |
 | Whole feature, requirement to release | `qa-feature-pipeline` | (runs the agents above) |
 | New or upgraded project workspace | `qa-workspace-init` | – |
 | Project brain (BRAIN / CONTEXT) | `workspace-brain` | – |

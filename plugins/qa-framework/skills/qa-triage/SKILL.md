@@ -6,6 +6,10 @@ argument-hint: "<logs, screenshots, or a description of the failure>"
 
 # QA Triage
 
+> Follows `${CLAUDE_PLUGIN_ROOT}/reference/agent-protocol.md`: result contract with a way forward, ask before
+> Blocked/Failed, a yes before any external write, the QA verification gate, CONTEXT.md updated at the end.
+> A QA member's direct instruction overrides this skill's workflow rules (never the hard rules).
+
 Argument: `$ARGUMENTS` — the failure evidence (logs, stack trace, description) or a pointer
 to it (e.g. a job id, a screenshot path).
 

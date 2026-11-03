@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased (2.0.0, phase 2) — 2026-11-03
+
+- Every agent has an "Agent protocol (qa-framework 2.x)" section: a QA member's direct instruction comes first
+  (overrides workflow rules, never the hard rules); never stop without a way forward (`NEEDS_INPUT` with options and
+  another agent that could continue); a yes at the moment of any external write; the result contract (status line,
+  outputs, what to verify, next step); CONTEXT.md and the feature's status.md updated at the end (read-only agents
+  return a `CONTEXT entry:` block for the caller).
+- Every skill points to the protocol.
+- New agent `qa-result-reviewer`: second-pass review of a round before the QA member sees it (coverage,
+  cross-platform and cross-account consistency, status discipline incl. Blocked-without-QA-confirmation, regression
+  signals, secrets, traceability); proposes corrections, never changes results.
+- New agent `qa-build-intake`: finds and identifies builds (version, environment, debug/release, signing), checks
+  they fit the release and the target, uploads/installs only after a yes.
+- `qa-feature-pipeline` follows the 2.x lifecycle: build intake (5b), preflight + BrowserStack or local round (6),
+  result review + hard QA verification gate (6b), only verified-valid failures to triage/filing (7), automation only
+  for a Stable feature or on a QA instruction (8), sanity tag at promotion (9), retest = reported issues + related
+  area (10); supports the `features/<feature>/` layout.
+
 ## Unreleased (2.0.0, phase 1) — 2026-11-03
 
 Design: `docs/framework-v2-design.md` (approved by the QA lead 2026-11-03).

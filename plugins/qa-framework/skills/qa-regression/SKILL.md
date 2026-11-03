@@ -6,6 +6,10 @@ argument-hint: "[build/apk or \"latest\"] [env: staging|preprod|prod] [suite: sm
 
 # QA Regression Run
 
+> Follows `${CLAUDE_PLUGIN_ROOT}/reference/agent-protocol.md`: result contract with a way forward, ask before
+> Blocked/Failed, a yes before any external write, the QA verification gate, CONTEXT.md updated at the end.
+> A QA member's direct instruction overrides this skill's workflow rules (never the hard rules).
+
 Argument: `$ARGUMENTS` — the build (or "latest" from Firebase App Distribution), environment
 (default staging) and suite (default: smoke then regression).
 

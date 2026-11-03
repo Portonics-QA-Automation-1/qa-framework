@@ -6,6 +6,10 @@ argument-hint: "<description of the change, a diff, or a PR>"
 
 # QA Impact Analysis
 
+> Follows `${CLAUDE_PLUGIN_ROOT}/reference/agent-protocol.md`: result contract with a way forward, ask before
+> Blocked/Failed, a yes before any external write, the QA verification gate, CONTEXT.md updated at the end.
+> A QA member's direct instruction overrides this skill's workflow rules (never the hard rules).
+
 Argument: `$ARGUMENTS` — describe what changed, or point at a diff/PR/changed files.
 
 ## Steps

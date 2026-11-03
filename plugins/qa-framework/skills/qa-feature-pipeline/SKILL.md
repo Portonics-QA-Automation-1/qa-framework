@@ -6,6 +6,10 @@ argument-hint: "<feature slug> [start | status | build <apk|latest> | report]"
 
 # QA Feature Pipeline (one QA member + AI agents)
 
+> Follows `${CLAUDE_PLUGIN_ROOT}/reference/agent-protocol.md`: result contract with a way forward, ask before
+> Blocked/Failed, a yes before any external write, the QA verification gate, CONTEXT.md updated at the end.
+> A QA member's direct instruction overrides this skill's workflow rules (never the hard rules).
+
 Argument: `$ARGUMENTS`: the feature slug (as in `TestCase/<feature>-…`), then a mode:
 
 | Mode | What it does |
@@ -25,7 +29,8 @@ automation only after the manual round.
 
 ## Files kept per feature
 
-`pipeline/<feature>/` in the workspace:
+`features/<feature>/` in the workspace (framework 2.x layout from `qa-workspace-init`), or `pipeline/<feature>/`
+in older workspaces; use whichever exists:
 
 - `status.md`: the live status (template: `templates/status.md` next to this skill). Rewrite it at the
   start and end of every stage and at every gate. Top section "Waiting on QA" lists open gates, newest
@@ -55,18 +60,23 @@ yes (work done before the pipeline), show it to the QA member as a gate and ask 
 | 3 | Readiness | `/qa-framework:qa-env-readiness` | readiness section in `status.md` | Only if Not ready: who fixes each gap. Ready → no gate |
 | 4 | Test design | `/qa-framework:qa-test-design` | `TestCase/<feature>-test-cases.md` + `.xlsx` | The cases (spot check: story order, both account types, negatives per limit) |
 | 5 | Sync cases | `/qa-framework:qa-sync` | Execute.io suite + cases, tc_ids written back | The sync itself (suite/folder names, local or production) |
-| 6 | Manual round | `/qa-framework:qa-execute` per build | `TestCase/evidence/<feature>/<round>/SUMMARY.md` | Before start: the run name. Results are recorded live (the run was approved at gate 2) |
-| 7 | Triage + bugs | `/qa-framework:qa-triage`, then `/qa-framework:qa-file-bug` (Karmo) | drafts under `TestCase/evidence/<feature>/<round>/bugs/` | Each draft: real bug or not. Then Components/Assignee/Sprint, then the final yes to file |
-| 8 | Automation | `qa-framework:qa-automation-engineer` (selection, then flows) | `maestro/automation-selection/<feature>-automation-selection.xlsx`, `maestro/features/<feature>/` | The selection sheet; then each validated flow |
+| 5b | Build intake | `qa-framework:qa-build-intake` | builds identified (version, environment, signing), uploaded/installed | The download/upload/install itself |
+| 6 | Manual round | preflight (protocol 4), then `/qa-framework:qa-browserstack-round` (App Live, single or parallel) or `/qa-framework:qa-execute` (emulator / own device) | `<round>/results.xlsx` + `SUMMARY.md` | Before start: the preflight answers and the run name |
+| 6b | Result review + **QA verification** | `qa-framework:qa-result-reviewer`, then the QA member | review corrections applied; verification recorded in `status.md` | **Hard gate (protocol 6):** nothing after this starts until the QA member has verified the round |
+| 7 | Triage + bugs | `/qa-framework:qa-triage`, then `/qa-framework:qa-file-bug` (Karmo) | drafts under the round's `bugs/` | Only failures the QA member verified as valid. Each draft: Components/Assignee/Sprint, then the final yes to file |
+| 8 | Automation | `qa-framework:qa-automation-engineer` (selection with smoke/sanity/regression, per-case validation points, flows, run) | `maestro/automation-selection/<feature>-automation-selection.xlsx`, `maestro/features/<feature>/` | Entry: the feature is **Stable** (protocol 8b) and the QA member says yes, or a QA member instructs it. Then each case's validation point; then the sync of the passed flows |
 | 9 | Promote to regression | this skill (below) | tags in the flows, automation suite in Execute.io | The list of flows and tags, and the sync |
-| 10 | Retest | `/qa-framework:qa-retest` per fixed bug | Execute.io results + verification comment drafts | Each comment before it is posted; the QA member closes the ticket |
+| 10 | Retest | `/qa-framework:qa-retest` (reported issues + related area) | results, "new since last build" list, verification comment drafts | Scope before execution; verification gate after; each comment before it is posted |
 | 11 | Regression per build | `/qa-framework:qa-regression` | `maestro/reports/<stamp>/` + run report | Syncing the results; any failure triaged as an app bug goes to stage 7 |
 | 12 | Sign-off | `/qa-framework:qa-report-signoff` | release-readiness report | The QA member and the business make the go/no-go call. Never state it |
 | 13 | Post-release | `/qa-framework:qa-post-release` | post-release report | Escaped defects → new test-case candidates (back to stage 4) |
 
-Stages 6, 7, 10 and 11 repeat for every build until sign-off. Stage 8 runs **in parallel** with the
-manual rounds once the first manual round has a summary (automation is a selected subset written
-after the manual round; see `maestro/automation-selection`).
+Stages 5b, 6, 6b, 7, 10 and 11 repeat for every build until sign-off. Stage 8 starts only when the
+feature is **Stable** (agent protocol 8b: verified failures fixed and retested, no open behaviour
+question, design final, last round passed and verified, known issues deferred) and the QA member says
+yes; offer it then ("<feature> is stable. Shall I write the Maestro flows?"). A QA member's direct
+instruction starts it at any time. After every stage, propose the next one; the QA member may pick
+another or assign anything else.
 
 ### How to run a stage
 
@@ -91,20 +101,24 @@ A new build is the main trigger once test design is done. In order:
    `curl -s -o /dev/null -w "%{http_code}" --max-time 15 <check url>`. No answer means the VPN is
    off: stop, write the gate "Connect the VPN", and run nothing (a run without it only fails at
    the first network call). Never connect the VPN or enter its credentials.
-1. **Build**: delegate to `qa-framework:qa-regression-runner` to fetch it (Firebase App Distribution through the
-   QA member's logged-in CLI, or the named APK). A download needs the QA member's OK (file, version,
-   size). Record the build in `status.md`.
+1. **Build**: delegate to `qa-framework:qa-build-intake` (newest build in the builds folder, or from the team chat,
+   Drive or Firebase App Distribution through the QA member's logged-in CLI). A download, upload or install
+   needs the QA member's OK (file, version, size, target). Record the build in `status.md`.
 2. **Smoke** (`/qa-framework:qa-regression … smoke`). If smoke fails: triage, write the gate, stop the event.
-3. **New-feature cases**: run `/qa-framework:qa-execute` for the cases with no result yet, or Failed/Blocked in
-   the last round, on this build. The run name follows `<Feature> - <Platform> - Round N - <build>`;
-   a new run needs the QA member's yes for its name (one question).
+3. **New-feature cases**: ask the preflight questions (protocol 4) not answered yet, then run
+   `/qa-framework:qa-browserstack-round` or `/qa-framework:qa-execute` for the cases with no result yet, or
+   Failed/Needs Review in the last round, on this build. The run name follows
+   `<Feature> - <Platform> - Round N - <build>`; a new run needs the QA member's yes for its name (one question).
 4. **Retest**: read the feature's Karmo bugs (read-only); for each one in a fixed / ready-for-QA
-   status, run `/qa-framework:qa-retest`. Draft the verification comments; never post or transition.
+   status, run `/qa-framework:qa-retest` (reported issues + related area; new issues listed separately).
+   Draft the verification comments; never post or transition.
    Passed retests of "Waiting on fix" automation rows go into the same gate as "move to To
    write"; after the yes, their flows are written like any approved row.
 5. **Regression**: `/qa-framework:qa-regression … regression` on the remaining emulators (up to 3, sharded),
    in parallel with step 3 when there is a free emulator.
-6. **Triage** every failure from 3–5 (`/qa-framework:qa-triage`) and put the drafts into one gate.
+6. **Review and verify**: run `qa-framework:qa-result-reviewer` on the round, apply the corrections it lists
+   that you agree with, then stop at the QA verification gate. Only after the QA member's verification:
+   **triage** the failures they marked valid (`/qa-framework:qa-triage`) and put the drafts into one gate.
 7. Write one "Build <n>" summary in `status.md`: smoke, new cases (pass/fail/blocked), retests,
    regression totals, drafts waiting. Log each step in `metrics.csv`.
 
@@ -121,9 +135,11 @@ run name, triage, filing, sync), so nothing is sent without the QA member.
 
 For each flow the QA member approved as validated:
 
-1. Tags: keep `android` and the case id; add `regression`. Add `smoke` to at most one or two flows per
-   feature: the shortest core positive path (for example "settings opens the customization page").
-   Flows for one-off data setups get `one-time` instead and stay out of regression.
+1. Tags: keep the platform tag and the case id; add `regression`. Add `smoke` to at most one or two flows per
+   feature: the shortest core positive path (for example "settings opens the customization page"). Add
+   `sanity` to the handful of flows that check the feature's main screens and core action (run after every
+   build or fix of the feature). Flows for one-off data setups get `one-time` instead and stay out of
+   regression.
 2. Run the feature once more by tag to prove the flows are picked up:
    use the workspace's Maestro run script (see its `maestro/README.md`) with the environment, the
    `regression` suite, the feature and the device. Pass every option and no stdin, so the script
@@ -151,4 +167,5 @@ Offer to publish the report as a page for management; publish only on a yes.
 - Cross a gate, file a bug, post a Karmo comment, create Execute.io structure or sync without a yes.
 - State a go/no-go decision.
 - Write phone numbers, OTPs, keys or passwords into `status.md`, `metrics.csv` or the report.
-- Write new Maestro flows outside stage 8, or before the first manual round of the feature.
+- Write new Maestro flows outside stage 8, or before the feature is Stable, unless a QA member instructed it.
+- Start anything after a round before the QA member has verified it (stage 6b).

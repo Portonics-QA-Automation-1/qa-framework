@@ -3,6 +3,10 @@ name: qa-automate-flow
 description: Write Maestro flows for approved test cases in the workspace's maestro/ framework, optionally run them on an emulator/device, and report what is validated. Usage - /qa-automate-flow <feature slug | test case id(s) | short description>
 ---
 
+> Follows `${CLAUDE_PLUGIN_ROOT}/reference/agent-protocol.md`: result contract with a way forward, ask before
+> Blocked/Failed, a yes before any external write, the QA verification gate, CONTEXT.md updated at the end.
+> A QA member's direct instruction overrides this skill's workflow rules (never the hard rules).
+
 1. **Resolve the test cases.** Find the feature's test-case file (`TestCase/<feature>-test-cases.md`
    or `specs/<feature>/qa/test-cases.md`). If the argument names TC ids, automate only those.
    If no test-case file exists, ask the QA member to paste the steps and expected results.
