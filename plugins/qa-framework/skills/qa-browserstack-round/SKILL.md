@@ -91,9 +91,25 @@ member's Downloads folder, and the round uses that file.
     non-code 2FA, a CAPTCHA or no App Live seat → the matching `browser_problem` card, then Retry. A verification
     code → `request_input` (secret), typed only into that field.
   - Signed out, **Claude Desktop**: ask the QA member to sign in.
-- Parallel: one tab per platform (Android tab, iOS tab), each in the same browser. Before starting a device in a
-  second tab, make sure the page fills the window (a tab drawn smaller than the window sends taps to the wrong
-  place): reset the tab's size first.
+- **Parallel needs one Claude session per platform.** Claude in Chrome binds one session to one tab group in one
+  window, so two platforms driven from one session take turns, never run at the same time (tested 2026-11-04).
+  Never drive two platforms in tabs of one session.
+  - **From the chat** (`mcp__qa_connector__start_platform_workers` is in the tool list): this session is the
+    coordinator. Do Phase 0, Phase 1 (build check and upload) and pick the devices here, then call
+    `start_platform_workers` with one entry per platform: `{"platform": "Android", "contract": <the executor's
+    full task contract, Phase 3, including "start the device, bring the app to its login screen and log in"
+    and the login method>}`. Each worker is a separate Claude process running `qa-browserstack-executor`; it
+    selects the same Chrome, opens its own window and drives only that. Then call `wait_platform_workers` (again
+    while `still_running` is not empty). The live status in the chat shows one line per platform, and each
+    worker's cards carry its platform ("Android – …"). Stop in the chat ends every worker. The computer runs at
+    most its `parallel-platforms` setting at once (default 2); more platforms wait for a free slot. Don't drive a
+    device yourself in this mode. The tool answers with an error (an older connector, or no browser checked) →
+    run the platforms one after the other in this session and say so.
+  - **Claude Desktop:** start one extra Claude session per extra platform with the executor's task contract (the
+    session-starting tool, e.g. `start_session`; each opens its own Chrome window with `tabs_context_mcp`
+    `createIfEmpty: true`) and drive the first platform yourself. No way to start a session → one platform after
+    the other, and say so.
+- Single platform, or one after the other: drive it in this session as before.
 - Start each device, bring the app to its login screen (language, pop-ups).
 - **Login, by where the round runs and the environment:**
   - Staging QA auto-login in the build (documented in the workspace): the agent uses it, anywhere.
@@ -117,7 +133,8 @@ member's Downloads folder, and the round uses that file.
 
 ## Phase 3 - Execution
 
-- One `qa-browserstack-executor` per platform (parallel) with a task contract: platform, case sheet and TC IDs
+- One `qa-browserstack-executor` per platform (parallel: one Claude session per platform, Phase 2) with a task
+  contract: platform, case sheet and TC IDs
   in order (grouped by account type), Execute.io IDs, round folder, build, environment, device, app, browser
   family and tab id, login method (QA member / auto-login / request_input) and logged-in account type,
   evidence yes/no, accounts and data the QA member said are available.
@@ -137,7 +154,9 @@ member's Downloads folder, and the round uses that file.
   `retest`; `version` = build per platform; comment starts `AI-executed (awaiting QA verification)` with device,
   environment, account type, expected vs actual, repro for Failed, reason for Blocked). Every result must come
   back with a `result_id`; report any that did not. Production writes need the QA member's yes for this run.
-- `results_sheet.py merge` writes `results.xlsx` + `SUMMARY.md`.
+- `results_sheet.py merge` writes `results.xlsx` + `SUMMARY.md`, once every platform has ended (parallel from the
+  chat: after `wait_platform_workers` returns `finished`; each worker's `RESULT_FILE` is its per-platform file).
+  A worker that failed or was stopped: its cases without a result are "Not run" with the worker's reason.
 
 ## Phase 5 - Review and verification gate
 

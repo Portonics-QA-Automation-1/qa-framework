@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.2.0 — 2026-11-04
+
+- **Parallel App Live rounds, truly at the same time** (needs Workspace Connector 0.11.0): Claude in Chrome binds one
+  Claude session to one tab group in one window, so two platforms in one session took turns. From the chat the round
+  is now a coordinator: after the build upload it calls `start_platform_workers` (one Claude process per platform,
+  each running qa-browserstack-executor in its own Chrome window of the same profile) and `wait_platform_workers`,
+  then merges and reviews once. In Claude Desktop the round starts one extra session per extra platform; without
+  that it runs the platforms one after the other and says so. Never two platforms in tabs of one session.
+- **qa-browserstack-executor:** its own window first (`tabs_context_mcp createIfEmpty`), a screenshot budget (zoom on
+  the device, one wait while a device starts, `find`/`read_page` on BrowserStack's pages; Pass/Failed/Needs Review
+  evidence unchanged), no full MSISDN in evidence, and `RESULT_FILE:` at the end of a worker's report.
+- **workspace-brain `learn`** names brain cards from the Execute.io chat that were never answered (Workspace
+  Connector 0.10.0 brain capture); it never writes an item nobody approved.
+
 ## 2.1.6 — 2026-11-04
 
 - **BrowserStack upload key from the chat** (needs Workspace Connector 0.9.1): before the first App Live upload,

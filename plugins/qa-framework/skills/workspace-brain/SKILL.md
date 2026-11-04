@@ -92,7 +92,9 @@ Mode: `$ARGUMENTS` (default `check`).
    - the CONTEXT.md entries;
    - `git log` and the changed files in the workspace and the repos in `.claude/brain.conf`;
    - new or changed files in the logic paths;
-   - corrections the user gave in this session.
+   - corrections the user gave in this session;
+   - from the Execute.io chat (the `qa_connector` tools are there): brain cards never answered, from the open
+     approvals `project_tasks` lists. Name them in the report; never write an item nobody approved.
 2. **For each item, decide where it belongs:**
    - **New lasting knowledge** goes into the right BRAIN.md section: a rule, a system/ID mapping, app or
      system behaviour, a convention, a gotcha or a decision. A decision also gets a decisions-log row
