@@ -34,7 +34,9 @@ release builds that hide secure screens on App Live).
      (file name, size if shown, sender, time) and ask for the download with an Approve card
      (`mcp__qa_connector__request_approval` in the chat, `NEEDS_APPROVAL` in Claude Desktop). After the yes:
      an uploaded file → its Download button; a Drive link → open it → Download (for a folder, open the folder and
-     download the matching file). Wait until the file is complete in the Downloads folder (no `.crdownload` /
+     download the matching file). For a large file Drive first shows "Google Drive can't scan this file for
+     viruses": click **Download anyway** (only for the approved build file). If Drive says you need access,
+     return `NEEDS_HUMAN:` (the QA member asks the sender to share it); never click "Request access" yourself. Wait until the file is complete in the Downloads folder (no `.crdownload` /
      `.part` / `.download` file left, size stable) and use that path. Never sign in anywhere; if Google asks for a
      sign-in, return `NEEDS_HUMAN:`.
    - Otherwise download with the session's browser tools (the built-in browser in Claude Desktop, Claude in Chrome

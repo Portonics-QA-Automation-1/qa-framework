@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.3 — 2026-11-04
+
+- qa-build-intake: Drive links and folders in the build group, including Drive's "can't scan for viruses" page for
+  large builds (Download anyway, only for the approved file); no access → the QA member asks the sender.
+
 ## 2.1.2 — 2026-11-04
 
 - qa-build-intake: reuse a build already in Downloads (same name and size); say clearly that a TestFlight-only
