@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.6 — 2026-11-04
+
+- **BrowserStack upload key from the chat** (needs Workspace Connector 0.9.1): before the first App Live upload,
+  `mcp__qa_connector__browserstack_key` asks the QA member once with two input cards (username, then the access key)
+  when the computer has no `browserstack.env`, and saves them only on that computer. The agent never asks for the
+  key in a message or reads the file. Removes the key file from the desk-only setup (the user, 2026-11-04).
+  Updated: qa-browserstack-round, qa-build-intake, agent-protocol §4a.
+
 ## 2.1.5 — 2026-11-04
 
 - **Everything from Google Chat, browser opened automatically** (protocol section 4a; needs Workspace Connector

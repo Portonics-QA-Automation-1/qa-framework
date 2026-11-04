@@ -141,8 +141,13 @@ connector or Execute.io. Still empty → `browser_problem` `browserstack_save_lo
 `browserstack_captcha` (never solved by an agent). No App Live for that user → `browserstack_no_seat`. After
 `retry`, reload and check again.
 
+**BrowserStack upload key from the chat:** before the first `bs_upload.py` call, `mcp__qa_connector__browserstack_key`.
+When the computer has no key file it asks the QA member once with two input cards (username, then the access key,
+secret) and saves them only on that computer; the agent never asks for the key in a message, never reads or prints
+the file, and stops the upload on `{"ready": false}`.
+
 In Claude Desktop (no `choose_browser` tool) the QA member is at the computer: if BrowserStack is signed out,
-ask them to sign in.
+ask them to sign in; the QA member fills in the key file.
 
 ## 5. Missing data during a test: ask before Blocked or Failed
 

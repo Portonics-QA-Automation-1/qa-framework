@@ -66,7 +66,10 @@ release builds that hide secure screens on App Live).
      Live, use debug") are stated with the alternative.
    - Production builds are never installed for a staging round, and the reverse, without the QA member saying so.
 4. **Upload / install, after a yes** (`NEEDS_APPROVAL` naming file and target; from the chat, an Approve card).
-   - BrowserStack App Live (`py -3` instead of `python3` on Windows): `python3 -I ${CLAUDE_PLUGIN_ROOT}/skills/qa-browserstack-round/scripts/bs_upload.py check`
+   - BrowserStack App Live (`py -3` instead of `python3` on Windows): from the chat, call
+     `mcp__qa_connector__browserstack_key` first (it asks the QA member once in the chat when this computer has no
+     upload key, and saves it only there; never ask for the key in a message or read the file; `{"ready": false}` →
+     stop and report). Then `python3 -I ${CLAUDE_PLUGIN_ROOT}/skills/qa-browserstack-round/scripts/bs_upload.py check`
      must print HTTP 200, then
      `... bs_upload.py upload <file> --custom-id <feature>-<platform>-<version>-<build>`; record the `app_url`.
    - Emulator/simulator: `adb -s <serial> install -r <apk>` (or `xcrun simctl install`), only on a device the QA member

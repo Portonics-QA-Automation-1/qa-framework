@@ -13,7 +13,11 @@ preflight, ask-before-Blocked, verification gate). Project specifics come from t
 Scripts: `${CLAUDE_PLUGIN_ROOT}/skills/qa-browserstack-round/scripts/`. `bs_upload.py` runs with
 `python3 -I`; for `results_sheet.py` get the interpreter with `PY=$(sh <scripts>/setup_venv.sh)` and run
 `$PY -I <scripts>/results_sheet.py …`. The BrowserStack username and access key are read from
-`~/.config/browserstack.env` (or `$BROWSERSTACK_ENV`), filled in by the QA member; never print them.
+`~/.config/browserstack.env` (or `$BROWSERSTACK_ENV`); never print or read them into the conversation. From the
+chat, call `mcp__qa_connector__browserstack_key` before the first `bs_upload.py` call: when the file is missing it
+asks the QA member once with two input cards (username, then the access key) and saves them only on that computer
+(Workspace Connector 0.9.1). `{"ready": false}` → stop the upload and report it. In Claude Desktop the QA member
+fills in the file.
 
 ## Where the round runs: Claude Desktop or the chat
 
@@ -71,7 +75,8 @@ member's Downloads folder, and the round uses that file.
    build) and its provisioning type. A TestFlight-only IPA cannot be installed on App Live: say so and continue
    with the other platform. If Android release builds hide secure screens (black login), ask for a debug build
    (see the workspace BRAIN.md).
-3. `bs_upload.py check` must print HTTP 200; otherwise report the exact problem.
+3. From the chat, `mcp__qa_connector__browserstack_key` first (see Scripts above). Then `bs_upload.py check` must
+   print HTTP 200; otherwise report the exact problem.
 4. After the QA member's yes (from the chat, an Approve card), upload: `bs_upload.py upload <file> --custom-id <feature>-<platform>-<version>-<build>`.
    Record the `app_url`.
 
