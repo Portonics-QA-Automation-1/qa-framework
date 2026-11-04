@@ -28,6 +28,14 @@ Check the session's tool list once, at the start:
 Use whichever browser tools the session has; the steps below are the same for both. Name the browser family
 and the tab id in every executor's task contract.
 
+## Login check only
+
+When the QA member asks only to try the login ("push the builds and log in", "login test"), run Phases 1 and 2
+for the requested platforms (in parallel when both), stop on each device after the login, and report per
+platform: build uploaded (app id), device, app opened, logged in as <account type> or the step that failed, with
+one screenshot of the logged-in Home (never of a screen showing the number or OTP). No test cases, no results
+sheet, no Execute.io writes.
+
 ## Phase 0 - Preflight (protocol section 4)
 
 Ask in one message only what the request and the workspace do not already answer:
@@ -42,12 +50,17 @@ Ask in one message only what the request and the workspace do not already answer
 6. **Results**: the named Execute.io run (name from the QA member; agents never create runs), or the
    workspace only.
 7. **Accounts and data available**: which account types will be logged in this session, and whether
-   Back Office data, a second number or a linked account will be needed. From the chat on staging/preprod, say
-   that the agent will ask for each number, OTP or PIN with an input card when it needs it.
+   Back Office data, a second number or a linked account will be needed. From the chat, say how logins work: on
+   staging from Execute.io's stored test accounts, on preprod and production by an input card the member answers
+   (number, then the OTP from their phone).
 
 Then state the plan (devices, builds, case counts per platform, result destination) and wait for a yes.
 
 ## Phase 1 - Build intake
+
+When the QA member names the dev team's build group and the build ("from Atom Store Build share group, AtomStore
+90.17.1 (64)"), qa-build-intake finds and downloads it with `find_builds` / `download_build` (chat) into the
+member's Downloads folder, and the round uses that file.
 
 1. If the build is not in the builds folder yet, `qa-build-intake` gets it from the team chat, a Drive link or
    Firebase App Distribution after the QA member's yes (`NEEDS_APPROVAL`; from the chat, an Approve card).
@@ -70,12 +83,17 @@ Then state the plan (devices, builds, case counts per platform, result destinati
 - Start each device, bring the app to its login screen (language, pop-ups).
 - **Login, by where the round runs and the environment:**
   - Staging QA auto-login in the build (documented in the workspace): the agent uses it, anywhere.
-  - **From the chat, staging or preprod:** the agent logs in itself. It asks the QA member for each value with
+  - **From the chat, any environment:** the agent logs in itself. It gets each value with
     `mcp__qa_connector__request_input`, one value per call, `secret: true`, e.g. label "MSISDN for prepaid
-    account on Android", then "OTP sent to the prepaid number" (and "PIN …" if the app asks). It types the value
-    only into the login field of the app under test on that App Live device.
+    account on Android", then "OTP sent to the prepaid number" (and "PIN …" if the app asks), each with
+    `env_key` set to the project's Execute.io variable (`MSISDN_PREPAID` / `MSISDN_POSTPAID` / `MSISDN`, `OTP`,
+    `PIN`). On staging Execute.io answers from its stored test accounts; on preprod and production the QA member
+    replies to the card in the chat (number first, then the OTP that arrives on their phone; an expired OTP is
+    asked again, at most 3 times). It types the value only into the login field of the app under test on that
+    App Live device.
   - **Claude Desktop** (no request_input): the QA member logs in on each device (`NEEDS_HUMAN`).
-  - **Production:** the QA member logs in. An agent never types a production OTP or password.
+  - **Production from Claude Desktop:** the QA member logs in. An OTP that confirms a payment or transfer is
+    never typed by an agent, anywhere.
 - **Values from request_input:** never written into any file, result sheet, evidence, summary, log or chat
   message; never repeated back; never typed anywhere else (not BrowserStack's sign-in, not another site). Results
   say "logged in as <account type>". A `rejected` or `timeout` answer: do not ask again in a loop; treat that
@@ -92,8 +110,8 @@ Then state the plan (devices, builds, case counts per platform, result destinati
 - Executors return `NEEDS_INPUT` instead of marking a case Blocked when an account, Back Office data or other
   data is missing (protocol section 5). Ask the QA member, with the executor's options, and resume it with the
   answer. Record Blocked only after the QA member confirms the data is not available, quoting that.
-- From the chat on staging/preprod, executors ask for a login, account switch or OTP value themselves with
-  request_input. `NEEDS_HUMAN` steps (a final payment confirm, a production login, a value the QA member
+- From the chat, executors get a login, account switch or login OTP value themselves with request_input.
+  `NEEDS_HUMAN` steps (a final payment confirm, a payment/transfer OTP, a value the QA member
   rejected or did not answer, and any login in Claude Desktop): ask for just that step on that device; the other
   platform keeps running.
 
@@ -121,8 +139,8 @@ Then state the plan (devices, builds, case counts per platform, result destinati
 ## Rules
 
 - Original case files are never changed; improvement ideas go to `case-improvements-<platform>.md`.
-- No secrets anywhere. A login value is typed only from request_input, in the chat, on staging/preprod, into
-  the app's login field on the App Live device. Never type a production OTP or password; never sign in to
+- No secrets anywhere. A login value is typed only from request_input, in the chat, into the app's login field
+  on the App Live device. Never type an OTP that confirms a payment or transfer; never sign in to
   BrowserStack or another site; never complete a payment; never change BrowserStack account settings or sign
   anyone out without the QA member asking.
 - Never create Execute.io structure or sync test cases from this skill; never file bugs.

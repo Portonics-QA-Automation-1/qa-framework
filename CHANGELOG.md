@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.1.1 — 2026-11-04
+
+- App Live login from the chat, every environment: `request_input` takes `env_key` (MSISDN_PREPAID,
+  MSISDN_POSTPAID, MSISDN, OTP, PIN). Staging: Execute.io answers from the project's stored test accounts.
+  Preprod and production: the QA member replies to the input card in the chat (number, then the OTP from their
+  phone; an expired OTP is asked again up to 3 times). OTPs that confirm payments or transfers stay human.
+  The same for rounds on the emulator/simulator or the member's own device when run from the chat
+  (qa-manual-executor). Needs Workspace Connector 0.7.0.
+- qa-build-intake: builds from the dev team's Google Chat build group or shared Drive folder by group name and
+  build name + version (`find_builds` / `download_build`, connector 0.7.0), saved in the member's Downloads folder.
+- qa-browserstack-round: a "login check only" mode (upload, open, log in, report; no cases).
+
 ## 2.1.0 — 2026-11-04 (App Live rounds from the chat)
 
 Decided by the QA lead on 2026-11-04. Needs Workspace Connector 0.6.0+ for the chat parts.

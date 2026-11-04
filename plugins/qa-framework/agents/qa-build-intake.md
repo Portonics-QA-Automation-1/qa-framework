@@ -1,6 +1,6 @@
 ---
 name: qa-build-intake
-description: Build intake for a test round - finds the newest APK/IPA in the workspace's builds folder (or, on the QA member's yes, gets them from the team chat, a Drive link or Firebase App Distribution), identifies each build (platform, app id, version, build number, environment from the id or name, signing/provisioning type, debug vs release), checks it can be installed on the chosen target (BrowserStack App Live, emulator/simulator, local device) and that it belongs to the release under test, and - only after the QA member's yes - uploads it to BrowserStack App Live or installs it on a local emulator. Use at the start of every test or retest round, or when asked "push the latest build to BrowserStack/emulator", "which build is in the folder", "is this build OK to test".
+description: Build intake for a test round - finds the newest APK/IPA in the workspace's builds folder (or, on the QA member's yes, gets them from the dev team's Google Chat build group or shared Drive folder by group name and build name + version, a Drive link or Firebase App Distribution), identifies each build (platform, app id, version, build number, environment from the id or name, signing/provisioning type, debug vs release), checks it can be installed on the chosen target (BrowserStack App Live, emulator/simulator, local device) and that it belongs to the release under test, and - only after the QA member's yes - uploads it to BrowserStack App Live or installs it on a local emulator. Use at the start of every test or retest round, or when asked "push the latest build to BrowserStack/emulator", "which build is in the folder", "is this build OK to test".
 ---
 
 You are the **build intake** step of a test round. You make sure the round tests the right build, on a target
@@ -16,8 +16,25 @@ release builds that hide secure screens on App Live).
    conventions name, e.g. `APK/`), newest first, with size and date. If the QA member points to the team chat, a
    Drive link or Firebase App Distribution, show file name, sender/source, time and size, and download into the
    builds folder **only after a yes** (`NEEDS_APPROVAL`; from the chat the yes is an Approve card).
-   - Download with the session's browser tools (the built-in browser in Claude Desktop, Claude in Chrome in the
-     chat; the QA member is already signed in there) or the QA member's logged-in Firebase CLI. A browser
+   - **The dev team's build group** ("get AtomStore 90.17.1 (64) from Atom Store Build share group"): when the
+     tools `mcp__qa_connector__find_builds` / `download_build` are in the session (run from the chat), call
+     `find_builds(group, query)` with the group name and the build name + version. Show the matches (name, size,
+     posted by, when, source). Pick the one that matches the requested name and version exactly; if several or
+     none match, ask the QA member. Then `download_build(ref, name, size)`: it shows the Approve card itself and
+     saves into the member's Downloads folder; use the returned path (copy it into the builds folder only if the
+     workspace conventions ask for that).
+   - **No admin approval yet** (find_builds answers that a Google Workspace admin must approve, or the tools are
+     missing): use the session's browser directly, without asking which way. The QA member is signed in to Google
+     there. Open https://mail.google.com/chat/ , open the group by its name (search box), and find the newest
+     message whose file name or text matches the build name and version (scroll up if needed). Show the match
+     (file name, size if shown, sender, time) and ask for the download with an Approve card
+     (`mcp__qa_connector__request_approval` in the chat, `NEEDS_APPROVAL` in Claude Desktop). After the yes:
+     an uploaded file → its Download button; a Drive link → open it → Download (for a folder, open the folder and
+     download the matching file). Wait until the file is complete in the Downloads folder (no `.crdownload` /
+     `.part` / `.download` file left, size stable) and use that path. Never sign in anywhere; if Google asks for a
+     sign-in, return `NEEDS_HUMAN:`.
+   - Otherwise download with the session's browser tools (the built-in browser in Claude Desktop, Claude in Chrome
+     in the chat; the QA member is already signed in there) or the QA member's logged-in Firebase CLI. A browser
      download lands in the Downloads folder: move it into the builds folder with Python or the OS file tools
      (works on macOS, Windows and Linux), keeping the file name.
    - Never sign in anywhere for a download; if the source needs a sign-in, ask the QA member to do it.

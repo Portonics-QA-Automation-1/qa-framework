@@ -28,6 +28,7 @@ belongs in that project's own workspace, never here.
 - Execute.io structure (suites, folders, milestones, plans, runs) is created only with names the QA member
   gives. Production writes are confirmed each time.
 - Agents never type credentials on a third-party site, never complete a payment, never decide go/no-go.
-  One exception: in a BrowserStack App Live round run from the chat, on staging/preprod, an agent may type a
-  number/OTP/PIN the QA member gives through the chat's input card into the app's login field on the device
-  (never stored, never repeated; production stays the QA member's).
+  One exception: in a BrowserStack App Live round run from the chat, an agent may type a login number/OTP/PIN
+  into the app's login field on the device: on staging from the project's stored test accounts, on preprod and
+  production only as the QA member gives it on the chat's input card (never stored, never repeated). OTPs that
+  confirm payments or transfers stay the QA member's.

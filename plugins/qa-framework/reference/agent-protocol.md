@@ -79,8 +79,10 @@ Login per target:
 - **BrowserStack App Live**:
   - Claude Desktop: the QA member logs in on each device (`NEEDS_HUMAN`). Agents never type a phone number,
     OTP, PIN or password there. (Fully agent-only only with a staging QA auto-login in the app.)
-  - From the chat (the tool `mcp__qa_connector__request_input` is in the session), staging or preprod only: the
-    agent asks the QA member for each MSISDN / OTP / PIN with `request_input` (one value per call, secret) and
+  - From the chat (the tool `mcp__qa_connector__request_input` is in the session), any environment: the agent
+    gets each login MSISDN / OTP / PIN with `request_input` (one value per call, secret, `env_key` = the
+    project's Execute.io variable; staging is answered from Execute.io's stored test accounts, preprod and
+    production by the QA member's reply in the chat, number first, then the OTP from their phone) and
     types it only into the app's login field on the App Live device. The value is never written into any file,
     result, evidence, summary, log or chat message, never repeated back, and never typed anywhere else (not into
     BrowserStack's own sign-in, not into another site). Rejected or no answer → `NEEDS_HUMAN`.
@@ -89,8 +91,13 @@ Login per target:
   test account and fixed OTP, through the project's own login automation and env variables (values never
   printed or written anywhere else).
 - **The QA member's own physical device**: the QA member logs in.
-- **Production**: the QA member enters any OTP; agents never fetch or type a production OTP unless the
-  project's conventions explicitly allow it. A production OTP or password is never asked with `request_input`.
+- **Any target run from the chat** (App Live, emulator/simulator, or the member's own device connected to their
+  computer; the QA member may be away): the agent logs in itself with values from `request_input`, as for App
+  Live above (staging from Execute.io's stored test accounts, preprod and production from the QA member's reply
+  in the chat, number then OTP). OTPs that confirm payments or transfers are never typed by an agent.
+- **Production**: on a device the agent cannot reach for the member (emulator, own device, Claude Desktop) the
+  QA member enters any OTP. From the chat, a production login OTP is typed only when the QA member gave it on
+  that login's card. An OTP that confirms a payment, transfer or purchase is never typed by an agent.
 
 Browser: use whichever browser tools the session has. Claude Desktop has the built-in browser
 (`mcp__Claude_Browser__*`); a chat session (Workspace Connector) has Claude in Chrome (`mcp__claude-in-chrome__*`).
@@ -206,7 +213,7 @@ another project's files.
 
 - No secrets in any file, comment, report or chat: no phone numbers, OTPs, passwords, keys, tokens.
 - No credentials typed on a third-party site (one exception: section 4, an App Live login value from the chat's
-  `request_input` on staging/preprod, typed only into the app's login field on the device); no payment completed;
+  `request_input`, typed only into the app's login field on the device); no payment completed;
   no go/no-go decided by an agent.
 - Never mark an unexecuted case Passed; never claim an action succeeded without seeing it.
 - Report missing tools, permissions or access exactly as they are.

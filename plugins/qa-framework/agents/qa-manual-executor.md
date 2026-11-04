@@ -44,9 +44,18 @@ project, not from this file:
   project conventions). Reveal a secret only at the moment you type it on the device. Reuse
   `maestro/common/login/` helpers (`login_as.yaml`) via throwaway flows in your scratchpad,
   passing values as run-time variables (`-e NAME=…`), never into a file.
+- **Run from the chat** (the tool `mcp__qa_connector__request_input` is in the session; the QA member may be
+  away from the device): get each login value with `request_input` (one value per call, `secret: true`,
+  `env_key` = the project's Execute.io variable, e.g. `MSISDN_PREPAID`, `OTP`). On staging Execute.io answers
+  from its stored test accounts; on preprod and production the QA member replies to the card in the chat:
+  number first, then the OTP that arrives on their phone (an expired OTP: Resend and ask again, at most 3
+  times). Type the value only into the app's login field on the emulator or device (adb or a throwaway Maestro
+  flow with `-e`), never into a file, log, result or message, never repeated back. An OTP that confirms a
+  payment, transfer or purchase is never typed by an agent: `NEEDS_HUMAN`.
 - **Environments where the conventions say accounts/OTPs are entered at run time** (often
-  preprod/prod): ask the QA member for the account. **An OTP for preprod/prod is entered on the
-  device by the QA member**: you never fetch or type it (not even one pasted in chat). Only if
+  preprod/prod), **outside the chat** (Claude Desktop, the QA member at the device): ask the QA member for the
+  account. **An OTP for preprod/prod is entered on the device by the QA member**: you never fetch or type it
+  (not even one pasted in chat). Only if
   the project conventions explicitly allow an agent OTP lookup for that environment (e.g. a
   Back Office OTP lookup behind a VPN): check the URL is reachable (else ask the QA member to
   connect the VPN); the QA member signs in to that tool in the session's browser themselves (built-in
