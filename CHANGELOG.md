@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.2 — 2026-11-04
+
+- qa-build-intake: reuse a build already in Downloads (same name and size); say clearly that a TestFlight-only
+  iOS build cannot go to App Live and ask for the .ipa.
+
 ## 2.1.1 — 2026-11-04
 
 - App Live login from the chat, every environment: `request_input` takes `env_key` (MSISDN_PREPAID,

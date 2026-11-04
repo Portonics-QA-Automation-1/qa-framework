@@ -23,6 +23,10 @@ release builds that hide secure screens on App Live).
      none match, ask the QA member. Then `download_build(ref, name, size)`: it shows the Approve card itself and
      saves into the member's Downloads folder; use the returned path (copy it into the builds folder only if the
      workspace conventions ask for that).
+   - **Already downloaded?** If the Downloads folder (or the builds folder) already has a file with the same name
+     and size as the match (ignoring a " (1)" suffix), use it: do not download it again.
+   - **iOS on TestFlight only:** App Live needs an .ipa file; a TestFlight link cannot be installed there. Say so,
+     and ask the QA member to have the dev team post the staging .ipa in the group (or give its path).
    - **No admin approval yet** (find_builds answers that a Google Workspace admin must approve, or the tools are
      missing): use the session's browser directly, without asking which way. The QA member is signed in to Google
      there. Open https://mail.google.com/chat/ , open the group by its name (search box), and find the newest
