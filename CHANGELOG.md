@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.1.0 — 2026-11-04 (App Live rounds from the chat)
+
+Decided by the QA lead on 2026-11-04. Needs Workspace Connector 0.6.0+ for the chat parts.
+
+- **App Live login from the chat** (`qa-browserstack-round`, `qa-browserstack-executor`, protocol section 4): a
+  round knows it runs from the chat when `mcp__qa_connector__request_input` is in the session's tool list. Then,
+  on staging and preprod only, the agent asks the QA member for each MSISDN / OTP / PIN with `request_input` (one
+  value per call, secret) and types it only into the app's login field on the App Live device. The value is
+  never written into a file, result, evidence, summary, log or chat message, never repeated back, never typed
+  anywhere else. Production OTPs and passwords stay with the QA member. In Claude Desktop (no `request_input`)
+  the QA member still logs in (`NEEDS_HUMAN`). `NEEDS_HUMAN` stays for final payment confirms, production logins
+  and values the QA member rejects or does not answer.
+- **Builds** (`qa-build-intake`, `qa-browserstack-round`, `qa-feature-pipeline`): the agent may download the
+  APK/IPA (team chat, Drive link, Firebase App Distribution) and upload it to App Live after the QA member's
+  approval; from the chat that approval is an Approve card. A browser download is moved into the builds folder.
+- **Browser** (`qa-browserstack-round`, `qa-browserstack-executor`, `qa-build-intake`, `qa-manual-executor`,
+  protocol): agents use whichever browser tools the session has: the built-in browser (`mcp__Claude_Browser__*`)
+  in Claude Desktop, Claude in Chrome (`mcp__claude-in-chrome__*`) in the chat. Parallel Android + iOS = one tab
+  each. The `qa-workspace-init` CLAUDE.md template states the login exception.
+- Fix: the `qa-browserstack-round` skill's `argument-hint` is quoted; before, its frontmatter failed to parse
+  and the skill loaded without its description.
+
 ## 2.0.0 — 2026-11-03 (phases 1 and 2)
 
 - Every agent has an "Agent protocol (qa-framework 2.x)" section: a QA member's direct instruction comes first

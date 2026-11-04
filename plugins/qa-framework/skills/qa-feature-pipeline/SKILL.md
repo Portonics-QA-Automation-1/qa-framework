@@ -102,8 +102,9 @@ A new build is the main trigger once test design is done. In order:
    off: stop, write the gate "Connect the VPN", and run nothing (a run without it only fails at
    the first network call). Never connect the VPN or enter its credentials.
 1. **Build**: delegate to `qa-framework:qa-build-intake` (newest build in the builds folder, or from the team chat,
-   Drive or Firebase App Distribution through the QA member's logged-in CLI). A download, upload or install
-   needs the QA member's OK (file, version, size, target). Record the build in `status.md`.
+   Drive or Firebase App Distribution, through the session's browser or the QA member's logged-in CLI). A
+   download, upload or install needs the QA member's OK (file, version, size, target); from the chat, an Approve
+   card. Record the build in `status.md`.
 2. **Smoke** (`/qa-framework:qa-regression … smoke`). If smoke fails: triage, write the gate, stop the event.
 3. **New-feature cases**: ask the preflight questions (protocol 4) not answered yet, then run
    `/qa-framework:qa-browserstack-round` or `/qa-framework:qa-execute` for the cases with no result yet, or

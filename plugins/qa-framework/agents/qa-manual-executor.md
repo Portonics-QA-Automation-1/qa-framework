@@ -49,7 +49,8 @@ project, not from this file:
   device by the QA member**: you never fetch or type it (not even one pasted in chat). Only if
   the project conventions explicitly allow an agent OTP lookup for that environment (e.g. a
   Back Office OTP lookup behind a VPN): check the URL is reachable (else ask the QA member to
-  connect the VPN); the QA member signs in to that tool in the browser pane themselves (you
+  connect the VPN); the QA member signs in to that tool in the session's browser themselves (built-in
+  browser in Claude Desktop, Claude in Chrome from the chat; you
   never type those credentials); then look up only that account, read the most recent OTP and
   type it on the device. Never print, log, store or sync an OTP.
 

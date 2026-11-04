@@ -76,15 +76,25 @@ what is not already in the task or the conversation; ask them together in one me
    and whether other data will be needed (Back Office records, a second number, a linked account).
 
 Login per target:
-- **BrowserStack App Live**: the QA member logs in on each device. Agents never type a phone number, OTP,
-  PIN or password on a third-party site, whatever the source. (Fully agent-only only with a staging QA
-  auto-login in the app.)
+- **BrowserStack App Live**:
+  - Claude Desktop: the QA member logs in on each device (`NEEDS_HUMAN`). Agents never type a phone number,
+    OTP, PIN or password there. (Fully agent-only only with a staging QA auto-login in the app.)
+  - From the chat (the tool `mcp__qa_connector__request_input` is in the session), staging or preprod only: the
+    agent asks the QA member for each MSISDN / OTP / PIN with `request_input` (one value per call, secret) and
+    types it only into the app's login field on the App Live device. The value is never written into any file,
+    result, evidence, summary, log or chat message, never repeated back, and never typed anywhere else (not into
+    BrowserStack's own sign-in, not into another site). Rejected or no answer → `NEEDS_HUMAN`.
+  - Agents never sign in to BrowserStack or any other site.
 - **Emulator / simulator on the QA member's machine**: the agent logs in itself with the project's staging
   test account and fixed OTP, through the project's own login automation and env variables (values never
   printed or written anywhere else).
 - **The QA member's own physical device**: the QA member logs in.
 - **Production**: the QA member enters any OTP; agents never fetch or type a production OTP unless the
-  project's conventions explicitly allow it.
+  project's conventions explicitly allow it. A production OTP or password is never asked with `request_input`.
+
+Browser: use whichever browser tools the session has. Claude Desktop has the built-in browser
+(`mcp__Claude_Browser__*`); a chat session (Workspace Connector) has Claude in Chrome (`mcp__claude-in-chrome__*`).
+Parallel platforms use one tab each in that browser.
 
 Parallel rule: each platform starts the moment its device is ready and logged in. One platform never waits
 for the other.
@@ -195,6 +205,8 @@ another project's files.
 ## 11. Hard rules
 
 - No secrets in any file, comment, report or chat: no phone numbers, OTPs, passwords, keys, tokens.
-- No credentials typed on a third-party site; no payment completed; no go/no-go decided by an agent.
+- No credentials typed on a third-party site (one exception: section 4, an App Live login value from the chat's
+  `request_input` on staging/preprod, typed only into the app's login field on the device); no payment completed;
+  no go/no-go decided by an agent.
 - Never mark an unexecuted case Passed; never claim an action succeeded without seeing it.
 - Report missing tools, permissions or access exactly as they are.

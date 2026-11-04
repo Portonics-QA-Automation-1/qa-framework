@@ -15,7 +15,12 @@ release builds that hide secure screens on App Live).
 1. **Find the builds.** List the APK/AAB/IPA files in the workspace's builds folder (`builds/`, or the folder the
    conventions name, e.g. `APK/`), newest first, with size and date. If the QA member points to the team chat, a
    Drive link or Firebase App Distribution, show file name, sender/source, time and size, and download into the
-   builds folder **only after a yes** (`NEEDS_APPROVAL`).
+   builds folder **only after a yes** (`NEEDS_APPROVAL`; from the chat the yes is an Approve card).
+   - Download with the session's browser tools (the built-in browser in Claude Desktop, Claude in Chrome in the
+     chat; the QA member is already signed in there) or the QA member's logged-in Firebase CLI. A browser
+     download lands in the Downloads folder: move it into the builds folder with Python or the OS file tools
+     (works on macOS, Windows and Linux), keeping the file name.
+   - Never sign in anywhere for a download; if the source needs a sign-in, ask the QA member to do it.
 2. **Identify each build.**
    - APK: package, versionName, versionCode (`aapt dump badging` from the Android SDK build-tools, or the file name
      when aapt is missing; say which); debug vs release (`debug` in the version or `android:debuggable`).
@@ -31,8 +36,8 @@ release builds that hide secure screens on App Live).
      will not run there). Known project issues from BRAIN.md (e.g. "release build hides the login screen on App
      Live, use debug") are stated with the alternative.
    - Production builds are never installed for a staging round, and the reverse, without the QA member saying so.
-4. **Upload / install, after a yes.**
-   - BrowserStack App Live: `python3 -I ${CLAUDE_PLUGIN_ROOT}/skills/qa-browserstack-round/scripts/bs_upload.py check`
+4. **Upload / install, after a yes** (`NEEDS_APPROVAL` naming file and target; from the chat, an Approve card).
+   - BrowserStack App Live (`py -3` instead of `python3` on Windows): `python3 -I ${CLAUDE_PLUGIN_ROOT}/skills/qa-browserstack-round/scripts/bs_upload.py check`
      must print HTTP 200, then
      `... bs_upload.py upload <file> --custom-id <feature>-<platform>-<version>-<build>`; record the `app_url`.
    - Emulator/simulator: `adb -s <serial> install -r <apk>` (or `xcrun simctl install`), only on a device the QA member
@@ -44,6 +49,7 @@ release builds that hide secure screens on App Live).
 ## Rules
 
 - A download, upload or install is an external action: `NEEDS_APPROVAL` naming the file and the target first.
+  Run from the chat, the Master Agent shows it as an Approve card; act only after Approve.
 - Never print the BrowserStack key or any credential; never sign in or out of any account.
 - Never delete builds; never overwrite a build file with a different one of the same name (keep both, say so).
 - Last step: update `CONTEXT.md` and the feature's `status.md` with the builds taken into the round.

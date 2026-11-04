@@ -1,7 +1,7 @@
 ---
 name: qa-browserstack-round
 description: Agentic manual test round on a new Android and/or iOS build - AI agents execute the feature's existing test cases (no scripted automation) on BrowserStack App Live real devices (single or parallel), or hand the round to qa-execute for the emulator / a local device, record every case as Passed / Failed / Blocked / Needs Review with evidence, write results to the named Execute.io run or the workspace, and stop at the QA verification gate. Also used for the retest round on a better build. Use when asked "push the latest build to BrowserStack and test <feature>", "run <feature> on App Live", "retest <feature> on the new build", or "BrowserStack round for <feature>".
-argument-hint: <feature> [run name] [build] [target: browserstack | emulator | device] [single | parallel] [env] [cases: all | failed | ids]
+argument-hint: "<feature> [run name] [build] [target: browserstack | emulator | device] [single | parallel] [env] [cases: all | failed | ids]"
 ---
 
 # Agentic manual test round (BrowserStack App Live)
@@ -14,6 +14,19 @@ Scripts: `${CLAUDE_PLUGIN_ROOT}/skills/qa-browserstack-round/scripts/`. `bs_uplo
 `python3 -I`; for `results_sheet.py` get the interpreter with `PY=$(sh <scripts>/setup_venv.sh)` and run
 `$PY -I <scripts>/results_sheet.py …`. The BrowserStack username and access key are read from
 `~/.config/browserstack.env` (or `$BROWSERSTACK_ENV`), filled in by the QA member; never print them.
+
+## Where the round runs: Claude Desktop or the chat
+
+Check the session's tool list once, at the start:
+- **From the chat** (Google Chat or the Execute.io web chat, through the Workspace Connector): the tool
+  `mcp__qa_connector__request_input` is in the tool list. The browser is Claude in Chrome
+  (`mcp__claude-in-chrome__*`; if deferred, load them in one ToolSearch call). Approvals arrive as
+  Approve/Reject cards.
+- **Claude Desktop** (the QA member at the computer): no `request_input` tool. The browser is the built-in
+  browser (`mcp__Claude_Browser__*`).
+
+Use whichever browser tools the session has; the steps below are the same for both. Name the browser family
+and the tab id in every executor's task contract.
 
 ## Phase 0 - Preflight (protocol section 4)
 
@@ -28,44 +41,61 @@ Ask in one message only what the request and the workspace do not already answer
 5. **Cases**: all of the feature, the last round's Failed + Needs Review first, or named cases.
 6. **Results**: the named Execute.io run (name from the QA member; agents never create runs), or the
    workspace only.
-7. **Accounts and data available**: which account types the QA member will log in this session, and whether
-   Back Office data, a second number or a linked account will be needed.
+7. **Accounts and data available**: which account types will be logged in this session, and whether
+   Back Office data, a second number or a linked account will be needed. From the chat on staging/preprod, say
+   that the agent will ask for each number, OTP or PIN with an input card when it needs it.
 
 Then state the plan (devices, builds, case counts per platform, result destination) and wait for a yes.
 
 ## Phase 1 - Build intake
 
-1. Identify each build: APK from the file name; IPA from `Payload/*.app/Info.plist` (bundle id, version,
+1. If the build is not in the builds folder yet, `qa-build-intake` gets it from the team chat, a Drive link or
+   Firebase App Distribution after the QA member's yes (`NEEDS_APPROVAL`; from the chat, an Approve card).
+2. Identify each build: APK from the file name; IPA from `Payload/*.app/Info.plist` (bundle id, version,
    build) and its provisioning type. A TestFlight-only IPA cannot be installed on App Live: say so and continue
    with the other platform. If Android release builds hide secure screens (black login), ask for a debug build
    (see the workspace BRAIN.md).
-2. `bs_upload.py check` must print HTTP 200; otherwise report the exact problem.
-3. After the QA member's yes, upload: `bs_upload.py upload <file> --custom-id <feature>-<platform>-<version>-<build>`.
+3. `bs_upload.py check` must print HTTP 200; otherwise report the exact problem.
+4. After the QA member's yes (from the chat, an Approve card), upload: `bs_upload.py upload <file> --custom-id <feature>-<platform>-<version>-<build>`.
    Record the `app_url`.
 
 ## Phase 2 - Devices and login
 
-- Use the browser signed in to a BrowserStack user with an App Live seat (`conventions/integrations.md`).
-  Before starting a device in a second tab, make sure the page fills the pane (a tab drawn smaller than the
-  pane sends taps to the wrong place): reset the tab's size first.
+- Use the browser signed in to a BrowserStack user with an App Live seat (`conventions/integrations.md`): the
+  built-in browser in Claude Desktop, the QA member's Chrome (Claude in Chrome) from the chat. If it is not
+  signed in, ask the QA member to sign in; agents never sign in to BrowserStack.
+- Parallel: one tab per platform (Android tab, iOS tab), each in the same browser. Before starting a device in a
+  second tab, make sure the page fills the window (a tab drawn smaller than the window sends taps to the wrong
+  place): reset the tab's size first.
 - Start each device, bring the app to its login screen (language, pop-ups).
-- **The QA member logs in on each device.** Agents never type a phone number, OTP, PIN or password on
-  BrowserStack, whatever the source. Exception only when the build has a staging QA auto-login (documented in
-  the workspace): then the agent uses it.
+- **Login, by where the round runs and the environment:**
+  - Staging QA auto-login in the build (documented in the workspace): the agent uses it, anywhere.
+  - **From the chat, staging or preprod:** the agent logs in itself. It asks the QA member for each value with
+    `mcp__qa_connector__request_input`, one value per call, `secret: true`, e.g. label "MSISDN for prepaid
+    account on Android", then "OTP sent to the prepaid number" (and "PIN …" if the app asks). It types the value
+    only into the login field of the app under test on that App Live device.
+  - **Claude Desktop** (no request_input): the QA member logs in on each device (`NEEDS_HUMAN`).
+  - **Production:** the QA member logs in. An agent never types a production OTP or password.
+- **Values from request_input:** never written into any file, result sheet, evidence, summary, log or chat
+  message; never repeated back; never typed anywhere else (not BrowserStack's sign-in, not another site). Results
+  say "logged in as <account type>". A `rejected` or `timeout` answer: do not ask again in a loop; treat that
+  login as `NEEDS_HUMAN`.
 - **Each platform starts the moment it is logged in**: hand that device to its executor at once; never wait for
   the other platform.
 
 ## Phase 3 - Execution
 
 - One `qa-browserstack-executor` per platform (parallel) with a task contract: platform, case sheet and TC IDs
-  in order (grouped by account type), Execute.io IDs, round folder, build, environment, device, app, browser tab
-  id, login method and logged-in account type, evidence yes/no, accounts and data the QA member said are
-  available.
+  in order (grouped by account type), Execute.io IDs, round folder, build, environment, device, app, browser
+  family and tab id, login method (QA member / auto-login / request_input) and logged-in account type,
+  evidence yes/no, accounts and data the QA member said are available.
 - Executors return `NEEDS_INPUT` instead of marking a case Blocked when an account, Back Office data or other
   data is missing (protocol section 5). Ask the QA member, with the executor's options, and resume it with the
   answer. Record Blocked only after the QA member confirms the data is not available, quoting that.
-- `NEEDS_HUMAN` steps (login, account switch, OTP, final payment confirm): ask for just that step on that
-  device; the other platform keeps running.
+- From the chat on staging/preprod, executors ask for a login, account switch or OTP value themselves with
+  request_input. `NEEDS_HUMAN` steps (a final payment confirm, a production login, a value the QA member
+  rejected or did not answer, and any login in Claude Desktop): ask for just that step on that device; the other
+  platform keeps running.
 
 ## Phase 4 - Results
 
@@ -91,6 +121,8 @@ Then state the plan (devices, builds, case counts per platform, result destinati
 ## Rules
 
 - Original case files are never changed; improvement ideas go to `case-improvements-<platform>.md`.
-- No secrets anywhere; never type credentials on BrowserStack; never complete a payment; never change
-  BrowserStack account settings or sign anyone out without the QA member asking.
+- No secrets anywhere. A login value is typed only from request_input, in the chat, on staging/preprod, into
+  the app's login field on the App Live device. Never type a production OTP or password; never sign in to
+  BrowserStack or another site; never complete a payment; never change BrowserStack account settings or sign
+  anyone out without the QA member asking.
 - Never create Execute.io structure or sync test cases from this skill; never file bugs.
