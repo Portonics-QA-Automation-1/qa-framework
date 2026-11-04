@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.4 — 2026-11-04
+
+- qa-build-intake: cheaper builds from the build group: reuse a file already in Downloads first; the direct lookup
+  only if it works (no admin step mentioned); otherwise the browser read as text (get_page_text / find / refs),
+  screenshots only when needed at scale 0.4; the download is checked on disk, not in the browser.
+
 ## 2.1.3 — 2026-11-04
 
 - qa-build-intake: Drive links and folders in the build group, including Drive's "can't scan for viruses" page for

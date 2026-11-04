@@ -16,29 +16,33 @@ release builds that hide secure screens on App Live).
    conventions name, e.g. `APK/`), newest first, with size and date. If the QA member points to the team chat, a
    Drive link or Firebase App Distribution, show file name, sender/source, time and size, and download into the
    builds folder **only after a yes** (`NEEDS_APPROVAL`; from the chat the yes is an Approve card).
-   - **The dev team's build group** ("get AtomStore 90.17.1 (64) from Atom Store Build share group"): when the
-     tools `mcp__qa_connector__find_builds` / `download_build` are in the session (run from the chat), call
-     `find_builds(group, query)` with the group name and the build name + version. Show the matches (name, size,
-     posted by, when, source). Pick the one that matches the requested name and version exactly; if several or
-     none match, ask the QA member. Then `download_build(ref, name, size)`: it shows the Approve card itself and
-     saves into the member's Downloads folder; use the returned path (copy it into the builds folder only if the
-     workspace conventions ask for that).
-   - **Already downloaded?** If the Downloads folder (or the builds folder) already has a file with the same name
-     and size as the match (ignoring a " (1)" suffix), use it: do not download it again.
-   - **iOS on TestFlight only:** App Live needs an .ipa file; a TestFlight link cannot be installed there. Say so,
-     and ask the QA member to have the dev team post the staging .ipa in the group (or give its path).
-   - **No admin approval yet** (find_builds answers that a Google Workspace admin must approve, or the tools are
-     missing): use the session's browser directly, without asking which way. The QA member is signed in to Google
-     there. Open https://mail.google.com/chat/ , open the group by its name (search box), and find the newest
-     message whose file name or text matches the build name and version (scroll up if needed). Show the match
-     (file name, size if shown, sender, time) and ask for the download with an Approve card
-     (`mcp__qa_connector__request_approval` in the chat, `NEEDS_APPROVAL` in Claude Desktop). After the yes:
-     an uploaded file → its Download button; a Drive link → open it → Download (for a folder, open the folder and
-     download the matching file). For a large file Drive first shows "Google Drive can't scan this file for
-     viruses": click **Download anyway** (only for the approved build file). If Drive says you need access,
-     return `NEEDS_HUMAN:` (the QA member asks the sender to share it); never click "Request access" yourself. Wait until the file is complete in the Downloads folder (no `.crdownload` /
-     `.part` / `.download` file left, size stable) and use that path. Never sign in anywhere; if Google asks for a
-     sign-in, return `NEEDS_HUMAN:`.
+   - **The dev team's build group** ("get AtomStore 90.17.1 (64) from Atom Store Build Share"): a Google Chat
+     group (or a shared Drive folder) where the dev team posts builds as uploaded files or Drive links.
+     1. **Already downloaded?** If the Downloads folder (or the builds folder) already has a file with that build
+        name and version and a plausible size (ignoring a " (1)" suffix), use it and stop here: no browser, no
+        download.
+     2. **Direct lookup, only if it works:** when `mcp__qa_connector__find_builds` is in the session, call it once.
+        If it returns matches, pick the exact name + version and `download_build(ref, name, size)` (it shows the
+        Approve card and saves into Downloads). If it answers that direct access is not set up, go to step 3 and
+        say nothing about it to the QA member.
+     3. **Through the browser (the usual way):** the QA member is signed in to Google in the session's browser.
+        Keep it cheap: read pages as text (`get_page_text`, `find`, `read_page` with `filter: interactive`) and
+        click elements by `ref`; take a screenshot only when text cannot find something, at `scale: 0.4`.
+        - Open https://mail.google.com/chat/u/0/ , `find` the search box, type the group name, open the group.
+        - `get_page_text` and look for the newest file name (or Drive link) matching the build name and version;
+          scroll up at most a few times.
+        - Show the match (file name, size if shown, sender, time) and ask for the download with an Approve card
+          (`mcp__qa_connector__request_approval` in the chat, `NEEDS_APPROVAL` in Claude Desktop).
+        - After the yes: an uploaded file → `find` its "Download" button → click it by ref. A Drive link → open it →
+          Download (a folder: open it, then the matching file). For a large file Drive shows "Google Drive can't
+          scan this file for viruses": click **Download anyway** (only for the approved build file). If Drive says
+          you need access, return `NEEDS_HUMAN:` (the QA member asks the sender to share it); never click
+          "Request access" yourself.
+        - Check the Downloads folder with Bash/Python, not the browser, until the file is complete (no
+          `.crdownload` / `.part` / `.download` file left, size stable), and use that path.
+     - **iOS on TestFlight only:** App Live needs an .ipa file; a TestFlight link cannot be installed there. Say
+       so, and ask the QA member to have the dev team post the staging .ipa in the group (or give its path).
+     - Never sign in anywhere; if Google asks for a sign-in, return `NEEDS_HUMAN:`.
    - Otherwise download with the session's browser tools (the built-in browser in Claude Desktop, Claude in Chrome
      in the chat; the QA member is already signed in there) or the QA member's logged-in Firebase CLI. A browser
      download lands in the Downloads folder: move it into the builds folder with Python or the OS file tools
