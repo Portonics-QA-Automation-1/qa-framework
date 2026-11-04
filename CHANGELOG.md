@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.1.5 — 2026-11-04
+
+- **Everything from Google Chat, browser opened automatically** (protocol section 4a; needs Workspace Connector
+  0.9.0): the connector opens Chrome in the member's remembered profile, links Claude Code to Chrome, checks the
+  connection and reopens / restarts Chrome by itself before the agent starts; the prompt names the browser to
+  select. Only what it cannot fix is a chat card: a pick-list (profile, browser; asked once) or Retry / Cancel saying
+  "from the chat" or "one-time setup at the computer" (install and sign in the Claude extension; save the
+  BrowserStack password in that profile — both listed by `setup`). Mid-task: `open_chrome`, then
+  `open_chrome restart`, then `browser_problem`. Never AskUserQuestion; a browser problem never ends the task (task
+  53 stopped with "no connected browser").
+- **BrowserStack sign-in from the chat** (the QA lead's safety line): the member saves the BrowserStack password
+  once in Chrome's password manager in their BrowserStack profile; the agent only clicks Sign in on a form Chrome
+  filled. It never sees, types, copies or stores the password. No saved login, a non-code 2FA, a CAPTCHA or no
+  App Live seat → a card; a verification code → `request_input`. Claude Desktop is unchanged (the QA member signs
+  in). Updated: qa-browserstack-round, qa-browserstack-executor, qa-build-intake, agent-protocol (sections 4, 4a, 11).
+
 ## 2.1.4 — 2026-11-04
 
 - qa-build-intake: cheaper builds from the build group: reuse a file already in Downloads first; the direct lookup

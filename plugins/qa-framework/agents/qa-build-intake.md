@@ -44,7 +44,9 @@ release builds that hide secure screens on App Live).
        so, and ask the QA member to have the dev team post the staging .ipa in the group (or give its path).
      - Never sign in anywhere; if Google asks for a sign-in, return `NEEDS_HUMAN:`.
    - Otherwise download with the session's browser tools (the built-in browser in Claude Desktop, Claude in Chrome
-     in the chat; the QA member is already signed in there) or the QA member's logged-in Firebase CLI. A browser
+     in the chat, prepared as in protocol section 4a: the connector opened Chrome and names the browser to select;
+     lost → `open_chrome`, `open_chrome` restart, then a `browser_problem` card with Retry; never AskUserQuestion;
+     the QA member is already signed in there) or the QA member's logged-in Firebase CLI. A browser
      download lands in the Downloads folder: move it into the builds folder with Python or the OS file tools
      (works on macOS, Windows and Linux), keeping the file name.
    - Never sign in anywhere for a download; if the source needs a sign-in, ask the QA member to do it.

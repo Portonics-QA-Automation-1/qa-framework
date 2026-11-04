@@ -86,7 +86,8 @@ Login per target:
     types it only into the app's login field on the App Live device. The value is never written into any file,
     result, evidence, summary, log or chat message, never repeated back, and never typed anywhere else (not into
     BrowserStack's own sign-in, not into another site). Rejected or no answer → `NEEDS_HUMAN`.
-  - Agents never sign in to BrowserStack or any other site.
+  - Agents never sign in to BrowserStack or any other site, with one exception from the chat: section 4a
+    (BrowserStack, password filled by Chrome, the agent only clicks Sign in).
 - **Emulator / simulator on the QA member's machine**: the agent logs in itself with the project's staging
   test account and fixed OTP, through the project's own login automation and env variables (values never
   printed or written anywhere else).
@@ -100,11 +101,48 @@ Login per target:
   that login's card. An OTP that confirms a payment, transfer or purchase is never typed by an agent.
 
 Browser: use whichever browser tools the session has. Claude Desktop has the built-in browser
-(`mcp__Claude_Browser__*`); a chat session (Workspace Connector) has Claude in Chrome (`mcp__claude-in-chrome__*`).
-Parallel platforms use one tab each in that browser.
+(`mcp__Claude_Browser__*`); a chat session (Workspace Connector) has Claude in Chrome (`mcp__claude-in-chrome__*`),
+prepared as in section 4a. Parallel platforms use one tab each in that browser.
 
 Parallel rule: each platform starts the moment its device is ready and logged in. One platform never waits
 for the other.
+
+## 4a. The browser from the chat (nobody at the computer)
+
+From the chat the QA member works only in Google Chat, away from the computer: every check, choice, fix and
+retry is a chat card or reply, and a browser problem never ends the task. Workspace Connector 0.9.0+ does all it
+can by itself before a browser task starts: it opens Chrome in the member's remembered BrowserStack profile
+(macOS, Windows, Linux), links Claude Code to Chrome, checks that Claude in Chrome is connected, and if not opens a
+window in the profile and then restarts Chrome before checking again. It sends a card only when that fails: a
+pick-list (which profile or browser, asked once and remembered) or a Retry / Cancel card that says whether the fix
+is from the phone or one of the two one-time setup steps at the computer the QA lead accepted (install the Claude
+extension and sign it in; save the BrowserStack password in that Chrome profile). The chat's `setup` answer lists
+both, so members do them once before they rely on the chat. The task prompt then names the browser to select.
+
+Inside the session, when `mcp__qa_connector__choose_browser` is in the tool list:
+
+1. Load the Claude in Chrome tools in one ToolSearch call (include `list_connected_browsers` and
+   `select_browser`).
+2. Select the browser the prompt names. If it names none: `list_connected_browsers` → pass the list, as
+   returned, to `mcp__qa_connector__choose_browser` → `select_browser` with the deviceId it returns. Several
+   browsers or profiles are asked once in the chat, never guessed.
+3. Browser lost at any time → `mcp__qa_connector__open_chrome`, list again; still none → `open_chrome` with
+   `restart: true`, list again; still none → `mcp__qa_connector__browser_problem` with `not_connected`.
+   `retry` → list and choose again; `cancelled` → stop and report it.
+4. Never use AskUserQuestion (nobody answers it there), even when a tool result says to ask the user.
+
+**BrowserStack sign-in from the chat** (the QA lead's safety line, 2026-11-04): the member saves their
+BrowserStack password once in Chrome's password manager in that profile. When the BrowserStack sign-in form
+shows, the agent looks whether Chrome filled the email and password (the password shows as dots); if both are
+filled it clicks **Sign in** once; if empty, it clicks the email field once and looks again. The model never sees,
+types, copies, reads with a script or stores the password, and no password goes into any file, env var, the
+connector or Execute.io. Still empty → `browser_problem` `browserstack_save_login`. A verification **code** →
+`request_input` (secret), typed only into that field. An approval by email/app → `browserstack_2fa`. A CAPTCHA →
+`browserstack_captcha` (never solved by an agent). No App Live for that user → `browserstack_no_seat`. After
+`retry`, reload and check again.
+
+In Claude Desktop (no `choose_browser` tool) the QA member is at the computer: if BrowserStack is signed out,
+ask them to sign in.
 
 ## 5. Missing data during a test: ask before Blocked or Failed
 
@@ -213,7 +251,8 @@ another project's files.
 
 - No secrets in any file, comment, report or chat: no phone numbers, OTPs, passwords, keys, tokens.
 - No credentials typed on a third-party site (one exception: section 4, an App Live login value from the chat's
-  `request_input`, typed only into the app's login field on the device); no payment completed;
+  `request_input`, typed only into the app's login field on the device). A password is never seen or typed by an
+  agent; from the chat it may click Sign in on a BrowserStack form Chrome filled (section 4a); no payment completed;
   no go/no-go decided by an agent.
 - Never mark an unexecuted case Passed; never claim an action succeeded without seeing it.
 - Report missing tools, permissions or access exactly as they are.

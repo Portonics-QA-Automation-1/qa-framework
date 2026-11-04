@@ -21,7 +21,10 @@ Check the session's tool list once, at the start:
 - **From the chat** (Google Chat or the Execute.io web chat, through the Workspace Connector): the tool
   `mcp__qa_connector__request_input` is in the tool list. The browser is Claude in Chrome
   (`mcp__claude-in-chrome__*`; if deferred, load them in one ToolSearch call). Approvals arrive as
-  Approve/Reject cards.
+  Approve/Reject cards. The QA member works only in Google Chat: the connector has already opened Chrome and
+  checked the connection; select the browser the prompt names (protocol section 4a; otherwise `choose_browser` →
+  `select_browser`; lost → `open_chrome`, `open_chrome` restart, then a `browser_problem` card). A browser problem
+  is a card with Retry, never the end of the round.
 - **Claude Desktop** (the QA member at the computer): no `request_input` tool. The browser is the built-in
   browser (`mcp__Claude_Browser__*`).
 
@@ -75,8 +78,14 @@ member's Downloads folder, and the round uses that file.
 ## Phase 2 - Devices and login
 
 - Use the browser signed in to a BrowserStack user with an App Live seat (`conventions/integrations.md`): the
-  built-in browser in Claude Desktop, the QA member's Chrome (Claude in Chrome) from the chat. If it is not
-  signed in, ask the QA member to sign in; agents never sign in to BrowserStack.
+  built-in browser in Claude Desktop, the QA member's Chrome (Claude in Chrome, the profile chosen in protocol
+  section 4a) from the chat. Open https://app-live.browserstack.com/dashboard:
+  - Signed in → continue.
+  - Signed out, **from the chat**: protocol section 4a. Click **Sign in** only on a form Chrome filled from the
+    profile's saved password (it shows as dots); never type, read, copy or store a password. Not filled, a
+    non-code 2FA, a CAPTCHA or no App Live seat → the matching `browser_problem` card, then Retry. A verification
+    code → `request_input` (secret), typed only into that field.
+  - Signed out, **Claude Desktop**: ask the QA member to sign in.
 - Parallel: one tab per platform (Android tab, iOS tab), each in the same browser. Before starting a device in a
   second tab, make sure the page fills the window (a tab drawn smaller than the window sends taps to the wrong
   place): reset the tab's size first.
@@ -140,7 +149,8 @@ member's Downloads folder, and the round uses that file.
 
 - Original case files are never changed; improvement ideas go to `case-improvements-<platform>.md`.
 - No secrets anywhere. A login value is typed only from request_input, in the chat, into the app's login field
-  on the App Live device. Never type an OTP that confirms a payment or transfer; never sign in to
-  BrowserStack or another site; never complete a payment; never change BrowserStack account settings or sign
-  anyone out without the QA member asking.
+  on the App Live device. Never type an OTP that confirms a payment or transfer; never see or type a password
+  (from the chat, only click Sign in on a BrowserStack form Chrome filled, protocol section 4a); never sign in
+  to any other site; never complete a payment; never change BrowserStack account settings or sign anyone out
+  without the QA member asking.
 - Never create Execute.io structure or sync test cases from this skill; never file bugs.
