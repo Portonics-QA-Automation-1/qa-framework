@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.4.0 — 2026-11-05
+
+- **Firebase App Distribution downloads** (`scripts/firebase_builds.py`, Python + the npm firebase-tools package;
+  macOS, Windows, Linux): `check`, `apps`, `list`, `download` (dry run by default, `--yes` after the Approve card;
+  newest release when a version repeats; size and free-disk check; saves into Downloads). Access is the QA member's
+  own `firebase login`, once, until `firebase logout`; no key is asked or stored. qa-build-intake uses it for
+  "download <env> <version> from Firebase" and for TestFlight-only iOS builds (Apple allows no TestFlight download);
+  qa-regression-runner lists the latest release with it (the user, 2026-11-05: agents must get builds from anywhere,
+  Android and iOS, staging/preprod/live, with access given once).
+
 ## 2.3.0 — 2026-11-05
 
 - **Round progress in the chat** (needs Workspace Connector 0.12.0; agent-protocol §4b): qa-browserstack-executor,

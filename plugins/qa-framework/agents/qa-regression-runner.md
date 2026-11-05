@@ -32,10 +32,12 @@ Workspace `CLAUDE.md`, `conventions/environments.md` (devices, builds, Firebase)
 
 ## Steps
 
-1. **Build**: if the QA member named a build or APK, use it. Otherwise, if the Firebase CLI is
-   installed and logged in (`firebase login:list`), list the latest App Distribution release
-   for the app and compare with the installed `versionName`. Download only with the QA
-   member's OK (state file name, version and size). Never log in to Firebase yourself.
+1. **Build**: if the QA member named a build or APK, use it. Otherwise list the latest App
+   Distribution release for the app with
+   `python3 -I ${CLAUDE_PLUGIN_ROOT}/scripts/firebase_builds.py list --project <id> --app "<app>"`
+   (uses the QA member's own `firebase login`) and compare with the installed `versionName`.
+   Download only with the QA member's OK: `download ... --version <v>` without `--yes` states
+   file name, version and size; add `--yes` after the OK. Never log in to Firebase yourself.
 2. **Devices**: `adb devices`. Install the build on every emulator to use
    (`adb -s <id> install -r <apk>`); turn animations off
    (`settings put global window_animation_scale 0` etc.). Note the device sizes: flows tagged

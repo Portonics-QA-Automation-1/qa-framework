@@ -40,9 +40,24 @@ release builds that hide secure screens on App Live).
           "Request access" yourself.
         - Check the Downloads folder with Bash/Python, not the browser, until the file is complete (no
           `.crdownload` / `.part` / `.download` file left, size stable), and use that path.
-     - **iOS on TestFlight only:** App Live needs an .ipa file; a TestFlight link cannot be installed there. Say
-       so, and ask the QA member to have the dev team post the staging .ipa in the group (or give its path).
+     - **iOS on TestFlight only:** App Live needs an .ipa file; a TestFlight link cannot be installed there, and
+       Apple allows no download of a TestFlight build. Look for the same version in Firebase App Distribution
+       first (below); if it is not there, say so and ask the QA member to have the dev team post the .ipa in the
+       group or in Firebase (or give its path).
      - Never sign in anywhere; if Google asks for a sign-in, return `NEEDS_HUMAN:`.
+   - **Firebase App Distribution** ("download iOS preprod 55.17.0 from Firebase", or when the group has no file
+     for that build): the QA member's own `firebase login` gives access, once, until they run `firebase logout`.
+     Use `python3 -I ${CLAUDE_PLUGIN_ROOT}/scripts/firebase_builds.py` (on Windows `py -3 -I`) with the Firebase
+     project the conventions name (`--project`):
+     1. `list --app "<app>" [--match <version>]` shows the releases (version, build, date, release notes). Pick
+        the app by the environment asked for (the conventions map staging / preprod / live to Firebase app names).
+     2. `download --app "<app>" --version <version> [--build N]` without `--yes` prints the release (the newest
+        if several match), size, target file in the Downloads folder and free disk, and changes nothing (exit 3).
+        Show that in the Approve card (`NEEDS_APPROVAL` in Claude Desktop); after the yes run it with `--yes`.
+     3. "Not signed in" / "could not be used" → `NEEDS_HUMAN:` the QA member runs `firebase login` (or
+        `firebase login --reauth`) once at the computer. HTTP 403 → their login lacks App Distribution access:
+        `NEEDS_HUMAN:` ask the Firebase project owner for the "Firebase App Distribution Admin" role. Never log in
+        yourself and never ask for a key.
    - Otherwise download with the session's browser tools (the built-in browser in Claude Desktop, Claude in Chrome
      in the chat, prepared as in protocol section 4a: the connector opened Chrome and names the browser to select;
      lost → `open_chrome`, `open_chrome` restart, then a `browser_problem` card with Retry; never AskUserQuestion;
