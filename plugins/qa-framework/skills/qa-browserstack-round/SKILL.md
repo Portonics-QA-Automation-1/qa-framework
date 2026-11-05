@@ -57,9 +57,9 @@ Ask in one message only what the request and the workspace do not already answer
 6. **Results**: the named Execute.io run (name from the QA member; agents never create runs), or the
    workspace only.
 7. **Accounts and data available**: which account types will be logged in this session, and whether
-   Back Office data, a second number or a linked account will be needed. From the chat, say how logins work: on
-   staging from Execute.io's stored test accounts, on preprod and production by an input card the member answers
-   (number, then the OTP from their phone).
+   Back Office data, a second number or a linked account will be needed. From the chat, say how logins work: from
+   the values saved in Execute.io for that environment (staging, preprod or prod), else by an input card the member
+   answers (number, then the OTP from their phone).
 
 Then state the plan (devices, builds, case counts per platform, result destination) and wait for a yes.
 
@@ -117,8 +117,9 @@ member's Downloads folder, and the round uses that file.
     `mcp__qa_connector__request_input`, one value per call, `secret: true`, e.g. label "MSISDN for prepaid
     account on Android", then "OTP sent to the prepaid number" (and "PIN …" if the app asks), each with
     `env_key` set to the project's Execute.io variable (`MSISDN_PREPAID` / `MSISDN_POSTPAID` / `MSISDN`, `OTP`,
-    `PIN`). On staging Execute.io answers from its stored test accounts; on preprod and production the QA member
-    replies to the card in the chat (number first, then the OTP that arrives on their phone; an expired OTP is
+    `PIN`). Execute.io answers from the value saved for the round's environment
+    (staging, preprod or prod); when it is not saved there, or the brief says `Login values: from the
+    member` (pass that line on to every executor), the QA member replies to the card in the chat (number first, then the OTP that arrives on their phone; an expired OTP is
     asked again, at most 3 times). It types the value only into the login field of the app under test on that
     App Live device.
   - **Claude Desktop** (no request_input): the QA member logs in on each device (`NEEDS_HUMAN`).

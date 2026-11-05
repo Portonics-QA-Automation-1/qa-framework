@@ -81,8 +81,9 @@ Login per target:
     OTP, PIN or password there. (Fully agent-only only with a staging QA auto-login in the app.)
   - From the chat (the tool `mcp__qa_connector__request_input` is in the session), any environment: the agent
     gets each login MSISDN / OTP / PIN with `request_input` (one value per call, secret, `env_key` = the
-    project's Execute.io variable; staging is answered from Execute.io's stored test accounts, preprod and
-    production by the QA member's reply in the chat, number first, then the OTP from their phone) and
+    project's Execute.io variable; Execute.io answers from the value saved for that environment - staging, preprod or prod - else
+    the QA member replies in the chat, number first, then the OTP from their phone; an OTP is typed in one
+    action the moment it arrives) and
     types it only into the app's login field on the App Live device. The value is never written into any file,
     result, evidence, summary, log or chat message, never repeated back, and never typed anywhere else (not into
     BrowserStack's own sign-in, not into another site). Rejected or no answer → `NEEDS_HUMAN`.
@@ -94,8 +95,8 @@ Login per target:
 - **The QA member's own physical device**: the QA member logs in.
 - **Any target run from the chat** (App Live, emulator/simulator, or the member's own device connected to their
   computer; the QA member may be away): the agent logs in itself with values from `request_input`, as for App
-  Live above (staging from Execute.io's stored test accounts, preprod and production from the QA member's reply
-  in the chat, number then OTP). OTPs that confirm payments or transfers are never typed by an agent.
+  Live above (Execute.io's values saved for that environment, else the QA member's
+  reply in the chat, number then OTP). OTPs that confirm payments or transfers are never typed by an agent.
 - **Production**: on a device the agent cannot reach for the member (emulator, own device, Claude Desktop) the
   QA member enters any OTP. From the chat, a production login OTP is typed only when the QA member gave it on
   that login's card. An OTP that confirms a payment, transfer or purchase is never typed by an agent.

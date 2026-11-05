@@ -46,9 +46,11 @@ project, not from this file:
   passing values as run-time variables (`-e NAME=…`), never into a file.
 - **Run from the chat** (the tool `mcp__qa_connector__request_input` is in the session; the QA member may be
   away from the device): get each login value with `request_input` (one value per call, `secret: true`,
-  `env_key` = the project's Execute.io variable, e.g. `MSISDN_PREPAID`, `OTP`). On staging Execute.io answers
-  from its stored test accounts; on preprod and production the QA member replies to the card in the chat:
-  number first, then the OTP that arrives on their phone (an expired OTP: Resend and ask again, at most 3
+  `env_key` = the project's Execute.io variable, e.g. `MSISDN_PREPAID`, `OTP`). Execute.io answers from the
+  value saved for the round's environment (staging, preprod or prod); when it is not saved there, or the
+  brief says `Login values: from the member` (then no `env_key`), the QA member
+  replies to the card in the chat: number first, then the OTP that arrives on their phone, typed in one action
+  as soon as it comes (an expired OTP: Resend and ask again, at most 3
   times). Type the value only into the app's login field on the emulator or device (adb or a throwaway Maestro
   flow with `-e`), never into a file, log, result or message, never repeated back. An OTP that confirms a
   payment, transfer or purchase is never typed by an agent: `NEEDS_HUMAN`.

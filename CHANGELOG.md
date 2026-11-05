@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.4.1 — 2026-11-05
+
+- **Login values from every environment:** qa-browserstack-executor, qa-manual-executor, qa-browserstack-round,
+  agent-protocol and the workspace template now say Execute.io answers `request_input` from the values saved for
+  the round's environment (staging, preprod or prod); the member's card only when a value is not saved there
+  (needs the Execute.io server of 2026-11-05; the member saves values for all three).
+  A brief line `Login values: from the member` (the member said they give them) means input cards only, no
+  `env_key`; qa-browserstack-round passes it on to every executor.
+- **OTP typed fast:** an OTP is typed in one action the moment it arrives, never digit by digit or in chunks
+  (codes expire in about a minute); chunked typing is only for a phone-number field that dropped digits.
+- **qa-browserstack-executor closes its own window** after the last case and the end-state screenshot, so only
+  running Claude tab groups stay in Chrome (the member could not tell which session was running).
+
 ## 2.4.0 — 2026-11-05
 
 - **Firebase App Distribution downloads** (`scripts/firebase_builds.py`, Python + the npm firebase-tools package;
