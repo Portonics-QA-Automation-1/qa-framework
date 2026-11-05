@@ -53,6 +53,8 @@ project, not from this file:
    run the validated Maestro flow when one exists (`maestro test` on the stated device and
    environment) and still look at the evidence.
 3. **Record** each case in the named run (status + comment `Retest of <defect> on <build>`).
+   From the chat (`mcp__qa_connector__report_progress` in the tool list), report the running totals and the next
+   case after each one, and the total at the start (agent-protocol §4b).
 4. **Draft** the defect comment: Verified fixed / Not fixed (step, expected, actual) /
    Partially fixed.
    **Report new issues separately** as "new since <previous build>: possible regression from the

@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.3.0 — 2026-11-05
+
+- **Round progress in the chat** (needs Workspace Connector 0.12.0; agent-protocol §4b): qa-browserstack-executor,
+  qa-manual-executor and qa-retest call `mcp__qa_connector__report_progress` with the total at the start and the
+  running totals plus the next case after each recorded case. Execute.io shows it in Google Chat as a progress bar
+  per platform. `current` is a case id and title only; a failed call never stops the round; `stop: true` stops it.
+  Without the tool (Claude Desktop) nothing changes (the user, 2026-11-05: members in Google Chat could not tell
+  what was happening in the background).
+
 ## 2.2.0 — 2026-11-04
 
 - **Parallel App Live rounds, truly at the same time** (needs Workspace Connector 0.11.0): Claude in Chrome binds one

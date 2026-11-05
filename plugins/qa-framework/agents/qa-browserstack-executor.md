@@ -127,6 +127,8 @@ $PY -I ${CLAUDE_PLUGIN_ROOT}/skills/qa-browserstack-round/scripts/results_sheet.
   [--evidence "<screenshot file, App Live session time>"]
 ```
 
+- From the chat (`mcp__qa_connector__report_progress` in the tool list): after the sheet row, report this
+  platform's running totals and the next case (agent-protocol §4b); once at the start with the total.
 - `--actual` is concrete for every status so the QA member can check a Pass too.
 - Save App Live screenshots only when the task says evidence downloads are approved; otherwise note the time.
 - **No full MSISDN in evidence.** A screen that shows the phone number (the Android debug staging build shows it on

@@ -149,6 +149,22 @@ the file, and stops the upload on `{"ready": false}`.
 In Claude Desktop (no `choose_browser` tool) the QA member is at the computer: if BrowserStack is signed out,
 ask them to sign in; the QA member fills in the key file.
 
+## 4b. Round progress in the chat
+
+When `mcp__qa_connector__report_progress` is in the tool list (a round started from the chat; Workspace Connector
+0.12.0+), the QA member follows the round in Google Chat as a progress bar per platform. Every agent that executes
+cases (qa-browserstack-executor, qa-manual-executor, qa-retest, also when run locally from the chat):
+
+1. Once the cases to run are known: `report_progress` with `total` (this platform's cases) and all counts 0, and
+   `current` = the first case ("TC-001 – Login with prepaid").
+2. Right after each case is recorded: `report_progress` with the **running totals** for this platform (passed,
+   failed, blocked, needs_review; not a delta) and `current` = the next case, or none after the last.
+3. `current` is a case id and short title only: never an MSISDN, OTP, PIN or other value.
+4. A failed call does not stop the round. `stop: true` in the reply means the QA member stopped the task: stop at
+   once and report what was done.
+
+Without the tool (Claude Desktop) nothing is reported; the member watches the session.
+
 ## 5. Missing data during a test: ask before Blocked or Failed
 
 When a case needs something not available right now (a postpaid or other account logged in, Back Office

@@ -84,6 +84,8 @@ and/or screenshot), and compare with expected result N.
 - Call `sync_results` (execute-io-sync) right after each case: test_run_name and
   test_plan_name as given, tc_id (Execute.io ID), status, comment (required for failed and
   blocked), version = build tested. Never include account identifiers or OTPs in comments.
+- From the chat (`mcp__qa_connector__report_progress` in the tool list): after each case's result, report the
+  running totals and the next case (agent-protocol §4b); once at the start with the total.
 - If the sync tool is unavailable or denied, keep results in
   `TestCase/evidence/<feature>/<round>/results.json` and tell the QA member; never claim a
   result is synced when it isn't.
