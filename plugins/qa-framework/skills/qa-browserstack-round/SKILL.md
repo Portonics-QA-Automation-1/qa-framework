@@ -99,7 +99,9 @@ member's Downloads folder, and the round uses that file.
     `start_platform_workers` with one entry per platform: `{"platform": "Android", "contract": <the executor's
     full task contract, Phase 3, including "start the device, bring the app to its login screen and log in"
     and the login method>}`. Each worker is a separate Claude process running `qa-browserstack-executor`; it
-    selects the same Chrome, opens its own window and drives only that. Then call `wait_platform_workers` (again
+    selects the same Chrome, opens its own window and drives only that; the workers that start together place
+    their windows side by side once, before any device starts (`arrange_round_windows`, connector 0.17.0), so the
+    member sees every platform at once. Then call `wait_platform_workers` (again
     while `still_running` is not empty). The live status in the chat shows one line per platform, and each
     worker's cards carry its platform ("Android – …"). Stop in the chat ends every worker. The computer runs at
     most its `parallel-platforms` setting at once (default 2); more platforms wait for a free slot. Don't drive a

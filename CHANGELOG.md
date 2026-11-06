@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.5.1 — 2026-11-06
+
+- **Parallel App Live rounds side by side** (qa-browserstack-executor, qa-browserstack-round; Workspace Connector
+  0.17.0): the platform workers that start together call `mcp__qa_connector__arrange_round_windows` once, as soon
+  as their window shows App Live and before any device starts; the connector waits until every window is open and
+  places them side by side (Android left, iOS right; four as a grid) on macOS, Windows and Linux (wmctrl), so the
+  QA member sees all sessions at once. Windows never move during the round (a resize moves the device under the
+  agent's taps). Older connectors or Claude Desktop: no change.
+
 ## 2.5.0 — 2026-11-06
 
 - **Obstacles: ask the brain, then reason** (agent-protocol §5a; qa-browserstack-executor, qa-manual-executor,

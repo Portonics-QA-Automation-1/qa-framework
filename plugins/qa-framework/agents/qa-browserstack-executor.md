@@ -40,6 +40,13 @@ first, state-changing cases after, relaunch/logout last).
   Never move, drag or close tabs outside it, and never front another window: in a parallel round the other
   platform's agent is a separate Claude session driving its own window of the same Chrome at the same time.
   In the built-in browser, use the tab id you were given.
+- **Side by side in a parallel round** (the connector's worker rules give you `total` and `slot`): as soon as your
+  window shows App Live (the dashboard, before you pick or start a device), call
+  `mcp__qa_connector__arrange_round_windows` once with that `total`, `slot` and your App Live tab's id. It waits
+  until every platform's window is open and places them side by side (Android left, iOS right) so the QA member
+  sees all sessions at once. Start the device only after it returns, then take a fresh screenshot before the first
+  tap. Never move or resize your window afterwards: a resize moves the device under your taps. Not arranged, or
+  the tool is missing (an older connector, Claude Desktop) → carry on as usual.
 - **Close your window when you are done.** After the last case and the end-state screenshot, close the tabs of
   your own window (`tabs_close_mcp`; this ends that App Live session). Never close a tab of another window. So
   the only Claude tab groups left in Chrome are the ones still running (⏳), not old finished ones (✅).
