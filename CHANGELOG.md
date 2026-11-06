@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.5.0 — 2026-11-06
+
+- **Obstacles: ask the brain, then reason** (agent-protocol §5a; qa-browserstack-executor, qa-manual-executor,
+  qa-retest): when the app shows something the case does not mention, the executor describes it and asks the
+  brain first (`mcp__qa_connector__recall_brain`, Workspace Connector 0.16.0; else BRAIN.md and the evidence
+  summaries), applies what is known, tries at most 3 safe moves when it is new (never spend, send or type an OTP
+  or password it was not given), then asks the QA member. Only a new obstacle and what solved it is proposed for
+  the brain: a known one is never proposed again, even in other words.
+
 ## 2.4.1 — 2026-11-05
 
 - **Login values from every environment:** qa-browserstack-executor, qa-manual-executor, qa-browserstack-round,

@@ -180,6 +180,27 @@ data, a linked number, a second device, analytics access, an older build):
 4. Record **Failed** only when the app's behaviour contradicts the expected result. Missing data is never a
    failure.
 
+## 5a. Something unexpected during a test: ask the brain, then reason
+
+When the app shows something the case and the brief do not mention (a pop-up, a new screen, an error, an extra
+step, a button that moved) or anything stands between you and the expected result:
+
+1. **Look and describe.** What screen is it, what does it say, which buttons, which build, what you did just before.
+2. **Ask the brain first.** From the chat, call `mcp__qa_connector__recall_brain` with that description; it
+   returns the closest passages of the workspace's BRAIN.md, CONTEXT, conventions and earlier rounds' summaries
+   and result files. Elsewhere, search BRAIN.md (app behaviour, gotchas) and the evidence summaries yourself.
+3. **Known** (a passage fits this build and screen): do what worked before and say so in the step's actual
+   ("known: lucky draw pop-up, closed with Back as BRAIN.md says").
+4. **New:** reason like a tester: what does the screen want, what is the safe way back to the case's path?
+   Try only safe moves (close / X, Back, wait a few seconds, scroll, read the screen again), at most 3, and
+   check the screen after each. Never a move that spends money, sends or deletes something, accepts terms, or
+   types an OTP, PIN or password you were not given for this.
+5. **Still stuck:** ask the QA member (an input card or an approval card from the chat, `NEEDS_INPUT`
+   otherwise) with what you saw, what you tried and the options. It is not a Failed unless the app contradicts
+   the expected result (§5).
+6. **Learn:** note what solved it, with the screenshot path, for the task's brain card: only if the brain did
+   not know it (a known obstacle is never proposed again, even in other words).
+
 ## 6. Verification gate: nothing moves on until the QA member verifies
 
 - After an execution round (and any stage marked `verify: required` in the project's `conventions/gates.md`),

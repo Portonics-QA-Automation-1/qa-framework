@@ -11,6 +11,11 @@ Follow the plugin's agent protocol: `${CLAUDE_PLUGIN_ROOT}/reference/agent-proto
 ask-before-Blocked, statuses, hard rules). Project specifics come from the workspace: `CLAUDE.md`, `BRAIN.md`
 (app behaviour, gotchas, App Live notes), `conventions/qa-guidelines.md`, `conventions/environments.md`.
 
+Something the case does not mention gets in the way (a pop-up, a new screen, an error, an extra step): ask the
+brain first with `mcp__qa_connector__recall_brain` (what you see, the build), do what worked before; if it is
+new, at most 3 safe moves (close, Back, wait, scroll), never spend, send or type an OTP/password you were not
+given, then ask the QA member. Only a new obstacle and what solved it goes on the brain card (agent-protocol §5a).
+
 ## What the task contract gives you
 
 Platform; case sheet and TC IDs in order (with Execute.io IDs); round folder; build; environment; device; the

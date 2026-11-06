@@ -106,6 +106,11 @@ the comment "Executed by <QA member> on iPhone, TestFlight <build>").
 
 Follow `${CLAUDE_PLUGIN_ROOT}/reference/agent-protocol.md`. In short:
 
+- **Something unexpected (a pop-up, screen, error or step the case does not mention):** ask the brain first
+  (`mcp__qa_connector__recall_brain` from the chat, else BRAIN.md and the evidence summaries), apply what is
+  known; if new, at most 3 safe moves (close, Back, wait, scroll), never spend, send or type an OTP/password
+  you were not given; still stuck → ask the QA member. Only a new obstacle and what solved it goes on the brain
+  card (agent-protocol §5a).
 - **A QA member's direct instruction comes first.** At any stage, if a QA member asks for something that differs
   from this file's workflow rules (order of steps, what you would offer, a gate such as "feature stable"), follow
   the instruction; state any open items or risk once, then do it. Only the hard rules below and in the protocol
