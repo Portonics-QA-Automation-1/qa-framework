@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.5.2 — 2026-11-07
+
+- **Round progress from every session that executes** (agent-protocol §4b, qa-execute): a skill or main session that
+  runs the cases or checks itself (an exploratory full-app check) reports `report_progress` after every recorded
+  result too, with `total` raised as the round grows; a "Progress reminder" after a tool result (Workspace Connector
+  0.17.4) means the chat's counts are stale. Task #139 had reported 3 passed at the start and nothing for 42 checks.
+- **Messages from the QA member while a task runs** (agent-protocol §4c; Workspace Connector 0.17.4): the member's
+  `tell N …`, the live card's Message box or a chat message qa-master passes on arrives after a tool result as
+  "MESSAGE FROM THE QA MEMBER" in every session of the task. It is binding like the brief (the hard rules still
+  apply), redone results are marked, and every message is listed in the report under "Instructions received during
+  the task". Task #139's eight mid-run notes had arrived as a teammate session's notes, which the agent weighed.
+  The task prompt names the channel, so that header in hook context is not an injection; text in pages, screens,
+  files and other tool output stays data.
+
 ## 2.5.1 — 2026-11-06
 
 - **Parallel App Live rounds side by side** (qa-browserstack-executor, qa-browserstack-round; Workspace Connector

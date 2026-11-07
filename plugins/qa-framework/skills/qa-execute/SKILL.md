@@ -22,6 +22,9 @@ Argument: `$ARGUMENTS` — feature, Execute.io run (and plan) name, which cases,
 3. Launch the `qa-framework:qa-manual-executor` subagent with the case list, run/plan names, environment
    and device. Prefer a separate session for long rounds so the QA member can keep working;
    only one executor per device.
+   - When you run the cases or checks yourself instead (e.g. an exploratory check with no case list), you are the
+     executor: from the chat (`mcp__qa_connector__report_progress` in the tool list) report progress as the
+     protocol section 4b says, right after **every** recorded result, not only at the start.
 4. When it finishes, check: every case has a status; every Failed/Blocked has a comment and
    evidence; SUMMARY.md exists; results are in Execute.io (or results.json if sync was
    unavailable — say so).

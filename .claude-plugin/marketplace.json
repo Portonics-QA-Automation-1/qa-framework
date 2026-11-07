@@ -7,7 +7,7 @@
       "name": "qa-framework",
       "source": "./plugins/qa-framework",
       "description": "16 QA agents and 17 skills: whole-feature pipeline, user story from FRS, requirement analysis, test plan, readiness, test design, Execute.io sync, manual execution, triage, Karmo bug filing, Maestro automation, regression, retest, sign-off and post-release.",
-      "version": "2.5.1",
+      "version": "2.5.2",
       "category": "testing"
     }
   ]
