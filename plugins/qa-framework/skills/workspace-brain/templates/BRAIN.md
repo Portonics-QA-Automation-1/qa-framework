@@ -31,10 +31,15 @@ This file holds the **lasting project logic**. Where the work stopped is in `CON
 - How to add a new feature or item the same way existing ones are done.
 
 ## 7. Behaviour learned (app / system)
-- What really happens, especially where it differs from the spec. Group it by feature.
+- What really happens, especially where it differs from the spec. Group it by feature (a **Feature** line, then
+  bullets). Once `brain/app-behaviour.md` exists, write new items there and keep one index line here per feature.
 
 ## 8. Gotchas
-- Looks wrong but is known or intended; traps and workarounds.
+- Looks wrong but is known or intended; traps and workarounds, one bullet each starting with a **bold title**. Once
+  `brain/gotchas.md` exists, write new ones there and keep the bold title here as the index line.
+
+**Playbooks** (known journeys agents follow instead of exploring: steps and a checkpoint per stage):
+`brain/playbooks.md`, one "## PB-<NAME>" section each; list their names here.
 
 ## 9. Open questions
 | Topic | Question | Blocks |
@@ -48,5 +53,8 @@ This file holds the **lasting project logic**. Where the work stopped is in `CON
 - Train it with `/workspace-brain learn` at the end of each working day, and after a feature, sync, deploy
   or bug round.
 - Update it in the same step as any change to logic, a rule, an environment, an ID map or a decision.
-- Edit in place; remove facts that are no longer true; keep it within about 300 lines.
+- Edit in place; remove facts that are no longer true.
+- This file is the core, loaded into every session; its detail lives word for word in `brain/*.md`, fetched with
+  `recall_brain` or Read. `scripts/brain_split.py` (workspace-brain) keeps it so: it moves behaviour and gotcha items
+  and decisions older than 3 days into `brain/` with a one-line index here, and never drops a line.
 - Status goes to CONTEXT.md, never here.

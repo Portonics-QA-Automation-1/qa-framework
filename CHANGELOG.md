@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.7.0 — 2026-11-07
+
+- **Every project keeps a slim brain by itself** (workspace-brain `scripts/brain_split.py`, standard-library Python
+  for macOS, Windows and Linux): BRAIN.md is loaded into every session (Claude Desktop, and every Google Chat
+  message and task through the Execute.io connector), so once it passes ~8k tokens its behaviour and gotcha items
+  and decisions older than 3 days (the newest 5 stay) move word for word into `brain/`, leaving a one-line index;
+  entries written straight into `brain/` get their index line; no line is ever lost (checked before writing) and
+  the previous file is kept in `~/.claude/backups/brain/`. It is reorganisation, never a logic change, so nobody is
+  asked: `setup` runs it with `--init` (creates `brain/playbooks.md`), `learn` after each training, `check` reports
+  it, and Workspace Connector 0.19.0 runs it after each chat task that wrote the brain. The BRAIN template says
+  where detail and playbooks go.
+
 ## 2.6.0 — 2026-11-07
 
 - **Known journeys cost no exploration** (agent-protocol §5b; qa-manual-executor, qa-retest,

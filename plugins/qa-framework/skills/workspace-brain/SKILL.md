@@ -13,9 +13,18 @@ day by day instead of being lost.
 | File | Holds | Changes |
 |---|---|---|
 | `CLAUDE.md` (or `AGENTS.md`) | Rules for working in this workspace, plus the hand-off section from `templates/claude-md-section.md` | Rarely |
-| `BRAIN.md` | **Lasting project logic**: purpose, system map, domain rules, key flows, environments and IDs, conventions, gotchas, open questions, decisions log | Whenever logic is learned or changes; trained at least daily |
+| `BRAIN.md` | **Lasting project logic, the core**: purpose, system map, domain rules, key flows, environments and IDs, conventions, open questions, recent decisions, and a one-line index of `brain/` | Whenever logic is learned or changes; trained at least daily |
+| `brain/*.md` | **The detail**, word for word: app behaviour, gotchas, older decisions, playbooks of known journeys. Fetched with `recall_brain` (chat) or Read, never loaded into every session | With BRAIN.md |
 | `CONTEXT.md` | **Live status**: in progress, waiting on the user, next steps, last 7 days | After every finished piece of work. Under about 150 lines |
 | `CONTEXT-archive.md` | Finished history, word for word, newest on top | When CONTEXT.md is pruned |
+
+**Why a core:** BRAIN.md is loaded into every session of the workspace - every Claude Desktop chat and every Google
+Chat message and task through the Execute.io connector - so every line in it is paid again and again from the
+team's shared plan. `scripts/brain_split.py` keeps it a core the same way in every project: when BRAIN.md passes
+~8k tokens, or once `brain/` has detail files, it moves behaviour and gotcha items and decisions older than 3 days (the newest
+5 always stay) word for word into `brain/`, leaving a one-line index; it checks no line is lost and keeps the old
+file in `~/.claude/backups/brain/`. It is reorganisation, not a logic change: run it without asking. The Execute.io
+connector runs it after every finished task too.
 
 Rules for every mode:
 - **One fact, one place.** Status never goes in BRAIN.md, and lasting logic never stays only in CONTEXT.md.
@@ -60,6 +69,8 @@ Mode: `$ARGUMENTS` (default `check`).
 2. **Write `BRAIN.md`** from `templates/BRAIN.md`.
    - Fill every section that applies, and delete the ones that don't.
    - Aim for 150–300 lines. Point to detailed docs instead of copying them.
+   Then run `python3 <this skill>/scripts/brain_split.py <workspace> --init` (Windows: `py -3`): it creates
+   `brain/playbooks.md` and, for a long BRAIN.md, moves the detail into `brain/`.
 3. **Write `CONTEXT.md`** from `templates/CONTEXT.md` with the current state.
    - If a long CONTEXT/status file already exists, keep its current part.
    - Move its finished history word for word to `CONTEXT-archive.md` (`templates/CONTEXT-archive.md`).
@@ -96,16 +107,18 @@ Mode: `$ARGUMENTS` (default `check`).
    - from the Execute.io chat (the `qa_connector` tools are there): brain cards never answered, from the open
      approvals `project_tasks` lists. Name them in the report; never write an item nobody approved.
 2. **For each item, decide where it belongs:**
-   - **New lasting knowledge** goes into the right BRAIN.md section: a rule, a system/ID mapping, app or
-     system behaviour, a convention, a gotcha or a decision. A decision also gets a decisions-log row
-     `date | decision (why)`.
+   - **New lasting knowledge** goes into the right place: a rule, a system/ID mapping, a convention or a decision
+     into its BRAIN.md section (a decision also gets a decisions-log row `date | decision (why)`); app or system
+     behaviour, a gotcha or a playbook (a known journey: steps and a checkpoint per stage) into its `brain/` file,
+     with a one-line entry in BRAIN.md's index for it.
    - **An answered open question:** remove its row and write the answer into its section.
    - **A fact that is no longer true:** fix it in place. If a rule changed, add a decisions-log row.
    - **Status:** stays in CONTEXT.md.
    - **Finished work no next step needs:** move it word for word to the top of CONTEXT-archive.md, under
      `## Archived YYYY-MM-DD`.
 3. **Keep the files lean:**
-   - BRAIN.md within about 300 lines; move detail to `conventions/` or `docs/` and point to it;
+   - Run `python3 <this skill>/scripts/brain_split.py <workspace>` (Windows: `py -3`): it keeps BRAIN.md a core and
+     moves new detail into `brain/`. Report its line in the training summary;
    - CONTEXT.md under about 150 lines.
 4. **Close the training:**
    - Set `Last trained: YYYY-MM-DD` at the top of BRAIN.md.
@@ -118,6 +131,7 @@ Mode: `$ARGUMENTS` (default `check`).
 
 Run `.claude/hooks/session-state.sh`, then report:
 - the BRAIN.md and CONTEXT.md line counts and the `Last trained:` date;
+- what `scripts/brain_split.py <workspace> --check` says (the core's size, and what would move to `brain/`);
 - files changed since the last training;
 - sections that are empty or out of date;
 - facts that duplicate CONTEXT.md or CLAUDE.md;
