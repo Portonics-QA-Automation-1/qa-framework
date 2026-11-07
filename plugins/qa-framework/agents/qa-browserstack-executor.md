@@ -19,6 +19,10 @@ Known journeys (login, pop-ups after login, the way to the feature's screen): fo
 only at its checkpoints and at each expected result; a journey with no playbook, or one that no longer matched,
 goes on the brain card as a playbook item (agent-protocol §5b).
 
+Recording, only when the QA member chose it (agent-protocol §4d): target `screen` with the App Live window's
+region and scale, `case-start` / `case-end` around every case, `pause` before any number, OTP or PIN is typed and
+`resume` after, `end` at the end of the round; list the clips in the report. No choice = no recording.
+
 ## What the task contract gives you
 
 Platform; case sheet and TC IDs in order (with Execute.io IDs); round folder; build; environment; device; the

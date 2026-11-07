@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.8.0 — 2026-11-07
+
+- **Session recording, only when the QA member asks** (agent-protocol §4d, new `scripts/session_recorder.py`,
+  standard-library Python for macOS, Windows and Linux): preflight question 8 asks none (default), the full session
+  (one video with each case's start-end time in `recordings.md`) or each case (all clips, or failed only: passed
+  clips are deleted at once). Targets: the emulator or the member's Android device (scrcpy, else adb screenrecord in
+  3-minute pieces), the iOS simulator (macOS) and BrowserStack App Live (ffmpeg captures the App Live window).
+  Recording pauses while a number, OTP or PIN is typed. Every clip is compressed (720p, 10 fps, H.264) the moment
+  it stops and the raw file is deleted; clips are cleaned after 7 days unless kept (a bug's clip is kept). `share`
+  makes a copy that fits one chat message (cut to a case, split when long), so "send the recording of TC-012" in
+  Google Chat posts it. qa-manual-executor, qa-retest, qa-browserstack-executor, qa-execute, qa-browserstack-round
+  and qa-defect-filer follow it. A recorder that writes nothing (e.g. macOS without the Screen Recording
+  permission) stops with the fix instead of leaving an empty video.
+
 ## 2.7.0 — 2026-11-07
 
 - **Every project keeps a slim brain by itself** (workspace-brain `scripts/brain_split.py`, standard-library Python

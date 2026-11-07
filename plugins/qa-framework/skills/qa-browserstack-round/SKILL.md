@@ -60,6 +60,8 @@ Ask in one message only what the request and the workspace do not already answer
    Back Office data, a second number or a linked account will be needed. From the chat, say how logins work: from
    the values saved in Execute.io for that environment (staging, preprod or prod), else by an input card the member
    answers (number, then the OTP from their phone).
+8. **Recording** (protocol section 4d): none (default), the full session, or each case (all clips or failed only).
+   Skip the question when the brief already says it.
 
 Then state the plan (devices, builds, case counts per platform, result destination) and wait for a yes.
 
@@ -140,7 +142,9 @@ member's Downloads folder, and the round uses that file.
   contract: platform, case sheet and TC IDs
   in order (grouped by account type), Execute.io IDs, round folder, build, environment, device, app, browser
   family and tab id, login method (QA member / auto-login / request_input) and logged-in account type,
-  evidence yes/no, accounts and data the QA member said are available.
+  evidence yes/no, recording choice (none / full / case + all or failed, protocol section 4d) with the round's
+  `recordings/` folder (parallel: `recordings-android/`, `recordings-ios/`), accounts and data the QA member said
+  are available.
 - Executors return `NEEDS_INPUT` instead of marking a case Blocked when an account, Back Office data or other
   data is missing (protocol section 5). Ask the QA member, with the executor's options, and resume it with the
   answer. Record Blocked only after the QA member confirms the data is not available, quoting that.
@@ -160,6 +164,8 @@ member's Downloads folder, and the round uses that file.
 - `results_sheet.py merge` writes `results.xlsx` + `SUMMARY.md`, once every platform has ended (parallel from the
   chat: after `wait_platform_workers` returns `finished`; each worker's `RESULT_FILE` is its per-platform file).
   A worker that failed or was stopped: its cases without a result are "Not run" with the worker's reason.
+- **Recordings** (if chosen): each executor ran `end`; `SUMMARY.md` and the reply list the clips (or the session's
+  case times) and say "send the recording of <TC>" gets one into the chat. Nothing is uploaded unless asked.
 
 ## Phase 5 - Review and verification gate
 

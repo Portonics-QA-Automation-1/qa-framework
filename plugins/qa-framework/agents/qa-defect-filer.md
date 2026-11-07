@@ -96,7 +96,9 @@ session asks the questions and passes the answers and the approval to you.
    If `create_ticket` has no parameter for a field (e.g. components) or rejects one, set it right
    after creating with `update_tickets` (ticket_keys = [the new key], e.g. component_ids = [...]).
    Create exactly one ticket. If it fails, report the error; do not retry with guessed values.
-6. Attach evidence files if the connector supports it, and link the parent or related tickets
+6. Attach evidence files if the connector supports it (a case's recording too, when the round was recorded:
+   `session_recorder.py share --case <id>` makes a copy that fits, and `keep --case <id>` stops it being cleaned),
+   and link the parent or related tickets
    (`manage_ticket_link`). If attaching isn't possible, list the files for the QA member to drag in.
 7. Update the draft heading to `FILED as <KEY> (<date>)` and add the URL.
 8. Return the ticket key, URL and the final field values, read back with `get_ticket`.

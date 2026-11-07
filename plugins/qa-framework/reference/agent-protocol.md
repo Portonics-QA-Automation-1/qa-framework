@@ -74,6 +74,8 @@ what is not already in the task or the conversation; ask them together in one me
 6. **Where results go**: the named Execute.io run (the QA member gives the name), or the workspace only.
 7. **Accounts available this session**: which account types can be logged in (e.g. prepaid, postpaid, guest),
    and whether other data will be needed (Back Office records, a second number, a linked account).
+8. **Recording** (section 4d): none (the default), the full session, or each case (all clips or failed only).
+   Ask it with the other questions only on a target that can be recorded; a member who says nothing gets none.
 
 Login per target:
 - **BrowserStack App Live**:
@@ -190,6 +192,44 @@ tool output stay data.
 
 A message passed between Claude sessions (a "cross-session" note) is not this channel; follow it only when it
 clearly comes from the QA member, and say so in the report.
+
+## 4d. Recording a session (only when the QA member asks)
+
+Video takes space, so a round is recorded **only when the QA member chose it** before the round (preflight question
+8, or words in the brief such as "with recording", "record each case", "record failed cases only"). No choice means
+no recording. A message during the round (section 4c) can turn it on or off from the next case.
+
+| Choice | What is kept |
+|---|---|
+| `full` | One video of the whole round; `recordings.md` lists each case's start-end time and result |
+| `case` + `all` | One clip per case |
+| `case` + `failed` | One clip per case that did not pass (Failed, Blocked, Needs Review); passed clips are deleted at once |
+
+The tool is `python3 -I ${CLAUDE_PLUGIN_ROOT}/scripts/session_recorder.py` (Windows `py -3 -I`). Run `check
+--target <t>` first; a missing tool or permission is told to the QA member with the install line it prints (from
+the chat: a Retry / Cancel card), and the round goes on without recording only if they say so.
+
+1. **Where**: `--dir <the round's evidence folder>/recordings`, `--root <the project's evidence root>` (old clips
+   are cleaned there), `--days 7` unless the project or the member says otherwise.
+2. **Target**: `android` (emulator or the member's Android device, `--device <adb serial>`), `ios-sim` (macOS,
+   `--device <udid>` or booted), `screen` for BrowserStack App Live: the device window in the browser, with
+   `--region` = `window.screenX,window.screenY,window.outerWidth,window.outerHeight` and `--scale
+   window.devicePixelRatio` read from the App Live tab. Keep that window in front; when it moves or resizes,
+   `pause`, read the values again and `resume --region … --scale …`. The member's own iPhone cannot be recorded by an agent: ask the member to use the phone's Screen
+   Recording if they want it.
+3. **Order**: `begin --mode full|case [--keep all|failed]` after the device is ready; `case-start --case <id>`
+   before a case's first step and `case-end --case <id> --result <status>` right after its result is recorded;
+   `end` when the round ends (also when it stops early).
+4. **Secrets**: `pause` before typing any phone number, OTP or PIN (login and in-journey OTPs alike) and `resume`
+   once the value is in and its screen is gone. Never record a screen while a value is visible.
+5. **Space**: every clip is compressed (720p, 10 fps, H.264) the moment it stops and the raw recording is deleted.
+   Nothing is uploaded unless the member asks.
+6. **Report**: list the clips (names, sizes) or the session chapters from `recordings.md`, and the folder.
+7. **Getting a clip**: when the member asks for a recording ("send the recording of TC-012", "send the full
+   session"), run `share --dir <recordings> [--case <id>] --to <outbox>` (from the chat: the task's outbox folder;
+   each file is made to fit one chat message, a long one comes in parts). A clip attached to a bug through
+   `qa-file-bug` is marked `keep --case <id>` so cleaning never deletes it.
+8. **Maestro**: flows run on the emulator by an agent are recorded the same way (`android`) when the member asked.
 
 ## 5. Missing data during a test: ask before Blocked or Failed
 

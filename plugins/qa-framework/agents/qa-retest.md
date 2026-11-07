@@ -83,6 +83,9 @@ Follow `${CLAUDE_PLUGIN_ROOT}/reference/agent-protocol.md`. In short:
   known; if new, at most 3 safe moves (close, Back, wait, scroll), never spend, send or type an OTP/password
   you were not given; still stuck → ask the QA member. Only a new obstacle and what solved it goes on the brain
   card (agent-protocol §5a).
+- **Recording, only when the QA member chose it** (agent-protocol §4d): `session_recorder.py begin` once the device
+  is ready, `case-start` / `case-end` around every case, `pause` before any number, OTP or PIN is typed and
+  `resume` after, `end` when the round ends; list the clips in the report. No choice = no recording.
 - **Known journeys cost no exploration** (agent-protocol §5b): follow the brain's playbook for the way to a case
   and look only at its checkpoints and the expected result; on the emulator or a local Android device run the
   workspace's Maestro shared steps (login, pop-ups, navigation) for that way instead of tapping through. A new or
