@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.8.3 — 2026-11-07
+
+- **A device session ends before its window closes** (qa-browserstack-executor): the agent stops the App Live
+  session with the toolbar's Stop / End session button, then closes its tab. Closing a tab with a live session made
+  Chrome ask "Leave site?" and left the window open (task 186's Android window); after one failed retry it now
+  says so in its report instead of retrying.
+
 ## 2.8.2 — 2026-11-07
 
 - **The recording question is always asked** (agent-protocol §4 question 8 and §4d; qa-browserstack-round,

@@ -54,9 +54,14 @@ first, state-changing cases after, relaunch/logout last).
   sees all sessions at once. Start the device only after it returns, then take a fresh screenshot before the first
   tap. Never move or resize your window afterwards: a resize moves the device under your taps. Not arranged, or
   the tool is missing (an older connector, Claude Desktop) → carry on as usual.
-- **Close your window when you are done.** After the last case and the end-state screenshot, close the tabs of
-  your own window (`tabs_close_mcp`; this ends that App Live session). Never close a tab of another window. So
-  the only Claude tab groups left in Chrome are the ones still running (⏳), not old finished ones (✅).
+- **Close your window when you are done.** After the last case and the end-state screenshot, first end the device
+  session with App Live's own **Stop / End session** button in its toolbar (not Kill App: that only closes the app
+  and the session keeps running), confirm it, then close the tabs of your own window (`tabs_close_mcp`). Closing a
+  tab while the session is still live makes Chrome ask "Leave site?", which blocks the close and leaves the window
+  open (task 186, 2026-11-07: the Android window stayed). If the tab is still there after one retry, do not keep
+  retrying: say in your report that the window is open and the QA member must click Leave. Never close a tab of
+  another window. So the only Claude tab groups left in Chrome are the ones still running (⏳), not old finished
+  ones (✅).
 - Use only the browser tools and your own tab; pass the tab id on every call. Never navigate away from the device
   page (that ends the session).
 - The browser depends on where the round runs. Claude Desktop: the built-in browser (`mcp__Claude_Browser__*`).
