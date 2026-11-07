@@ -84,8 +84,11 @@ and/or screenshot), and compare with expected result N.
 ## Recording
 
 - Call `sync_results` (execute-io-sync) right after each case: test_run_name and
-  test_plan_name as given, tc_id (Execute.io ID), status, comment (required for failed and
-  blocked), version = build tested. Never include account identifiers or OTPs in comments.
+  test_plan_name as given, tc_id (Execute.io ID), title (the case title from the case file), status, comment
+  (required for failed and blocked), version = build tested. Never include account identifiers or OTPs in comments.
+- Take each tc_id from the case file's sync table or the `sync_test_cases` answer, never by counting from a first ID
+  (IDs are not in case order). Execute.io refuses a result whose title is not that case's title: fix the ID, never
+  drop or change the title to make it pass. Check every answer row's `title` is the case you executed.
 - From the chat (`mcp__qa_connector__report_progress` in the tool list): after each case's result, report the
   running totals and the next case (agent-protocol §4b); once at the start with the total.
 - If the sync tool is unavailable or denied, keep results in

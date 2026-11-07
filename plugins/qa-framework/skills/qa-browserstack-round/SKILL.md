@@ -163,6 +163,11 @@ member's Downloads folder, and the round uses that file.
   `retest`; `version` = build per platform; comment starts `AI-executed (awaiting QA verification)` with device,
   environment, account type, expected vs actual, repro for Failed, reason for Blocked). Every result must come
   back with a `result_id`; report any that did not. Production writes need the QA member's yes for this run.
+  Each result carries `title` (the case title from the case file) besides `tc_id`; Execute.io refuses a result
+  whose title is not that case's, so a wrong ID cannot put it on another case. Take the tc_ids from the case file's
+  sync table or the `sync_test_cases` answer (one per case, per platform), never by counting from a first ID: IDs are
+  not in case order (task 186 put 77 results on the wrong cases that way). A refused result means the ID map is
+  wrong: stop syncing, fix the map, never change the title.
 - `results_sheet.py merge` writes `results.xlsx` + `SUMMARY.md`, once every platform has ended (parallel from the
   chat: after `wait_platform_workers` returns `finished`; each worker's `RESULT_FILE` is its per-platform file).
   A worker that failed or was stopped: its cases without a result are "Not run" with the worker's reason.

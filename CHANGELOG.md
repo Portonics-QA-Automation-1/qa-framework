@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.8.4 — 2026-11-07
+
+- **Results always go to the right case** (qa-browserstack-round, qa-manual-executor): every `sync_results` entry
+  sends the case `title` with its `tc_id`, and tc_ids come from the case file's sync table or the `sync_test_cases`
+  answer, never by counting from a first ID. Execute.io (from this release on) refuses a result whose title is not
+  that case's title. Task 186 put 77 of run 145's results on the wrong cases with a counted ID map.
+
 ## 2.8.3 — 2026-11-07
 
 - **A device session ends before its window closes** (qa-browserstack-executor): the agent stops the App Live
