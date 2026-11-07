@@ -74,8 +74,9 @@ what is not already in the task or the conversation; ask them together in one me
 6. **Where results go**: the named Execute.io run (the QA member gives the name), or the workspace only.
 7. **Accounts available this session**: which account types can be logged in (e.g. prepaid, postpaid, guest),
    and whether other data will be needed (Back Office records, a second number, a linked account).
-8. **Recording** (section 4d): none (the default), the full session, or each case (all clips or failed only).
-   Ask it with the other questions only on a target that can be recorded; a member who says nothing gets none.
+8. **Recording** (section 4d): none, the full session, or each case (all clips or failed only). **Always asked**
+   before a round on a target that can be recorded, even when every other question is answered, unless the
+   request or brief already says it (a `Recording: …` line, including `Recording: none`).
 
 Login per target:
 - **BrowserStack App Live**:
@@ -195,9 +196,14 @@ clearly comes from the QA member, and say so in the report.
 
 ## 4d. Recording a session (only when the QA member asks)
 
-Video takes space, so a round is recorded **only when the QA member chose it** before the round (preflight question
-8, or words in the brief such as "with recording", "record each case", "record failed cases only"). No choice means
-no recording. A message during the round (section 4c) can turn it on or off from the next case.
+Video takes space, so a round is recorded **only when the QA member chose it**, and they are **always asked** before
+the round when the request does not say it (preflight question 8; words such as "with recording", "record each
+case", "record failed cases only", "no recording", or a brief line `Recording: …`). Ask it as one short question with
+the four choices: no recording / full session / each case / failed cases only. In Claude Desktop ask in the
+conversation; from the chat, the Master Agent asks before dispatching and writes the answer into the brief, and a
+round that still has no `Recording:` line asks once with `mcp__qa_connector__request_input` (not secret) before its
+first device starts. No answer within the card's time means no recording. A message during the round (section 4c)
+can turn it on or off from the next case.
 
 | Choice | What is kept |
 |---|---|

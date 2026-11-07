@@ -15,7 +15,8 @@ Argument: `$ARGUMENTS` — the defect, the build containing the fix, and the Exe
 ## Steps
 
 1. Ask for anything missing in one question: the fixed build (newest in the builds folder), run
-   name, environment, target (BrowserStack / own device / emulator), single or parallel.
+   name, environment, target (BrowserStack / own device / emulator), single or parallel. Always include the recording question (protocol
+   section 4d: no recording / full session / each case / failed cases only) unless the request says it.
 2. Launch the `qa-framework:qa-retest` subagent. Its scope is always the reported issues **plus the
    related area** (neighbours, impact of the fix, the feature's core passed cases), so a fix that
    breaks something else is caught. Show the scope with reasons and wait for a yes before execution.

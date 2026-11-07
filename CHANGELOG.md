@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.8.2 — 2026-11-07
+
+- **The recording question is always asked** (agent-protocol §4 question 8 and §4d; qa-browserstack-round,
+  qa-execute, qa-retest): before every round on a recordable target, even when everything else is known, unless the
+  request says it (`Recording: …`, including none). From the chat the Master Agent asks before dispatching (Workspace
+  Connector 0.20.3); a round with no `Recording:` line asks once with a `request_input` card. A second round that
+  was fully specified had skipped it before.
+
 ## 2.8.1 — 2026-11-07
 
 - **Only the device windows are on screen in a parallel App Live round** (qa-browserstack-round, with Workspace

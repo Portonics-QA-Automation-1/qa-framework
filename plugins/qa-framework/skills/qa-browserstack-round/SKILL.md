@@ -60,8 +60,9 @@ Ask in one message only what the request and the workspace do not already answer
    Back Office data, a second number or a linked account will be needed. From the chat, say how logins work: from
    the values saved in Execute.io for that environment (staging, preprod or prod), else by an input card the member
    answers (number, then the OTP from their phone).
-8. **Recording** (protocol section 4d): none (default), the full session, or each case (all clips or failed only).
-   Skip the question when the brief already says it.
+8. **Recording** (protocol section 4d): no recording, the full session, each case, or failed cases only. Always
+   ask it, even when everything else is known, unless the brief has a `Recording:` line (from the chat with no
+   line: one `request_input` card before the first device starts).
 
 Then state the plan (devices, builds, case counts per platform, result destination) and wait for a yes.
 
