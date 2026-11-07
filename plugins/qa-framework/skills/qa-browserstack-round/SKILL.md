@@ -97,8 +97,9 @@ member's Downloads folder, and the round uses that file.
   window, so two platforms driven from one session take turns, never run at the same time (tested 2026-11-04).
   Never drive two platforms in tabs of one session.
   - **From the chat** (`mcp__qa_connector__start_platform_workers` is in the tool list): this session is the
-    coordinator. Do Phase 0, Phase 1 (build check and upload) and pick the devices here, then call
-    `start_platform_workers` with one entry per platform: `{"platform": "Android", "contract": <the executor's
+    coordinator. Do Phase 0, Phase 1 (build check and upload) and pick the devices here. Close every App Live tab
+    this session opened (`tabs_close_mcp`; never start a device here), so only the workers' device windows are on
+    the screen; then call `start_platform_workers` with one entry per platform: `{"platform": "Android", "contract": <the executor's
     full task contract, Phase 3, including "start the device, bring the app to its login screen and log in"
     and the login method>}`. Each worker is a separate Claude process running `qa-browserstack-executor`; it
     selects the same Chrome, opens its own window and drives only that; the workers that start together place

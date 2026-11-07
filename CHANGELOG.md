@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.8.1 — 2026-11-07
+
+- **Only the device windows are on screen in a parallel App Live round** (qa-browserstack-round, with Workspace
+  Connector 0.20.2): the coordinating session closes its own App Live tabs before it starts the platform workers,
+  so its window is never placed beside the Android and iOS windows.
+
 ## 2.8.0 — 2026-11-07
 
 - **Session recording, only when the QA member asks** (agent-protocol §4d, new `scripts/session_recorder.py`,
