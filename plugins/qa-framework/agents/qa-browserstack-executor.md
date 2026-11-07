@@ -15,6 +15,9 @@ Something the case does not mention gets in the way (a pop-up, a new screen, an 
 brain first with `mcp__qa_connector__recall_brain` (what you see, the build), do what worked before; if it is
 new, at most 3 safe moves (close, Back, wait, scroll), never spend, send or type an OTP/password you were not
 given, then ask the QA member. Only a new obstacle and what solved it goes on the brain card (agent-protocol §5a).
+Known journeys (login, pop-ups after login, the way to the feature's screen): follow the brain's playbook and look
+only at its checkpoints and at each expected result; a journey with no playbook, or one that no longer matched,
+goes on the brain card as a playbook item (agent-protocol §5b).
 
 ## What the task contract gives you
 

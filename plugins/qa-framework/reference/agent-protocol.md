@@ -226,6 +226,33 @@ step, a button that moved) or anything stands between you and the expected resul
 6. **Learn:** note what solved it, with the screenshot path, for the task's brain card: only if the brain did
    not know it (a known obstacle is never proposed again, even in other words).
 
+## 5b. Known journeys: follow the brain's playbook, spend tokens only on what is new
+
+Every screenshot and every step you reason about costs tokens from the team's shared plan. The way to a case
+(login, pop-ups after login, getting to the feature's screen) is usually a journey the brain already knows. Spend
+the judgement on the step under test, not on the way there.
+
+1. **Look it up once.** Before the first case, and when a case needs a journey you have not done in this session,
+   call `recall_brain` with "playbook <journey> <platform> <environment>" (or read the workspace's
+   `brain/playbooks.md`). A playbook lists the steps, a checkpoint for each stage, and the build it was last
+   verified on.
+2. **Known journey, same app line:** follow its steps without a screenshot after every tap. Look (screenshot or
+   zoom) only at its checkpoints, and at the case's expected result (that is the evidence). Say in the case's
+   actual that you followed it ("login: playbook PB-LOGIN-APPLIVE-ANDROID, checkpoints matched").
+3. **Zero-token steps on the emulator or a local Android device:** when the workspace has Maestro shared steps
+   for the way there (e.g. `maestro/common/login/ensure_logged_in.yaml`, `maestro/common/popups/clear_popups.yaml`,
+   a navigation step), run them with `maestro test` and the environment's env file instead of tapping through
+   yourself; then take over for the step under test. Never run Maestro for the step you are judging, never pass
+   or print a secret on the command line (use the env file), and do not list Maestro processes (their command
+   line shows the values).
+4. **A checkpoint does not match** (another screen, a new pop-up, a changed label): stop following the playbook
+   and switch to §5a for that point. Afterwards continue with the playbook only from a checkpoint that matches.
+5. **Learn the difference:** a journey with no playbook, or a playbook that no longer matched, goes on the task's
+   brain card as a playbook item (steps, checkpoints, build, evidence path; `agent_conclusion` marked), so the
+   next task follows it. A playbook that matched is never proposed again.
+6. **The judgement never shrinks:** every expected result is still checked by looking at the screen, and nothing
+   is marked Passed from a playbook alone.
+
 ## 6. Verification gate: nothing moves on until the QA member verifies
 
 - After an execution round (and any stage marked `verify: required` in the project's `conventions/gates.md`),

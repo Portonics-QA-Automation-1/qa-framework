@@ -24,7 +24,9 @@ Argument: `$ARGUMENTS` — feature, Execute.io run (and plan) name, which cases,
    only one executor per device.
    - When you run the cases or checks yourself instead (e.g. an exploratory check with no case list), you are the
      executor: from the chat (`mcp__qa_connector__report_progress` in the tool list) report progress as the
-     protocol section 4b says, right after **every** recorded result, not only at the start.
+     protocol section 4b says, right after **every** recorded result, not only at the start. Follow the
+     brain's playbooks for the way to each check (protocol section 5b): Maestro shared steps for login, pop-ups
+     and navigation on the emulator, screenshots only at checkpoints and expected results.
 4. When it finishes, check: every case has a status; every Failed/Blocked has a comment and
    evidence; SUMMARY.md exists; results are in Execute.io (or results.json if sync was
    unavailable — say so).

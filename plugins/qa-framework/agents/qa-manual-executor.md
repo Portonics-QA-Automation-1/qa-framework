@@ -111,6 +111,10 @@ Follow `${CLAUDE_PLUGIN_ROOT}/reference/agent-protocol.md`. In short:
   known; if new, at most 3 safe moves (close, Back, wait, scroll), never spend, send or type an OTP/password
   you were not given; still stuck → ask the QA member. Only a new obstacle and what solved it goes on the brain
   card (agent-protocol §5a).
+- **Known journeys cost no exploration** (agent-protocol §5b): follow the brain's playbook for the way to a case
+  and look only at its checkpoints and the expected result; on the emulator or a local Android device run the
+  workspace's Maestro shared steps (login, pop-ups, navigation) for that way instead of tapping through. A new or
+  changed journey goes on the brain card as a playbook item.
 - **A QA member's direct instruction comes first.** At any stage, if a QA member asks for something that differs
   from this file's workflow rules (order of steps, what you would offer, a gate such as "feature stable"), follow
   the instruction; state any open items or risk once, then do it. Only the hard rules below and in the protocol

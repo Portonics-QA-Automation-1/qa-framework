@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.6.0 — 2026-11-07
+
+- **Known journeys cost no exploration** (agent-protocol §5b; qa-manual-executor, qa-retest,
+  qa-browserstack-executor, qa-execute): before the first case the agent looks up the brain's playbook for the way
+  there (login, pop-ups after login, the feature's screen: the workspace's `brain/playbooks.md`, found by
+  `recall_brain`), follows it and looks only at its checkpoints and at each expected result. On the emulator or a
+  local Android device the workspace's Maestro shared steps do that way with zero model tokens. A checkpoint that
+  does not match switches to §5a; a new or changed journey goes on the brain card as a playbook item. The judgement
+  of each expected result never shrinks. Part of the token plan with Workspace Connector 0.18.0 (thread memo, model
+  per job, slim brain).
+
 ## 2.5.2 — 2026-11-07
 
 - **Round progress from every session that executes** (agent-protocol §4b, qa-execute): a skill or main session that
